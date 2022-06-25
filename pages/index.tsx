@@ -71,8 +71,6 @@ const Container = styled.div`
     align-items: flex-start;
     justify-content: center;
     flex-wrap: wrap;
-    width: 300px;
-    height: 450px;
     border: 1px solid rgba(20, 20, 20, 0.69);
     background-color: transparent;
     border-radius: 10px;
@@ -101,7 +99,7 @@ const Link = styled.a`
 const Home: NextPage = () => {
     const [gameOver, setGameOver] = useState(false);
     const [checked, setChecked] = useState<any>([]);
-    const [drawEmpty, setDrawEmpty] = useState(false);
+    const [drawEmpty, setDrawEmpty] = useState(true);
 
     const [m, setM] = useState(
         createAndFillTwoDArray({
