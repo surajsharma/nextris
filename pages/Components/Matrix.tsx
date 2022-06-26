@@ -70,7 +70,7 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
             });
 
         setRendered(re);
-    }, [matrix]);
+    }, [matrix, drawEmpty]);
 
     return <Container>{rendered}</Container>;
 };

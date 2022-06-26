@@ -24,8 +24,8 @@ import { Matrix } from "./Components/Matrix";
 import { Cur } from "./interfaces";
 
 const Screen = styled.div`
-    width: 220vw;
-    height: 210vh;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
     z-index: -1;
     opacity: 0.1;
@@ -220,21 +220,24 @@ const Home: NextPage = () => {
 
     //Timer/Loop
     useEffect(() => {
+        //TODO: pieces
         //TODO: keyboard
-        //TODO: check bounds
-        //TODO: freeze set pieces
-        //TODO: clear rows, reset m
-        //TODO: check game over
+        newGame();
         let timer = requestAnimationFrame(function gameLoop(timestamp) {
-            newGame();
             setTimeout(() => {
-                if (gameOver) requestAnimationFrame(gameLoop);
+                //TODO: check game over
+                //TODO: move cur piece down
+                //TODO: check cur piece settled
+                //TODO: new cur
+                //TODO: set settled pieces
+                //TODO: clear filled rows
+                if (!gameOver) requestAnimationFrame(gameLoop);
             }, 1000 / FPS);
         });
     }, []);
 
     return (
-        <div className="App">
+        <>
             <FC>
                 <h1>
                     <i>
@@ -272,7 +275,7 @@ const Home: NextPage = () => {
                     <button onClick={moveUp}>Up</button>
                 </Flex>
             </Container>
-        </div>
+        </>
     );
 };
 
