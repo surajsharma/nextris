@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { COLS, createAndFillTwoDArray, FPS, INIT_LOC, ROWS } from "./utils";
 
 // Pieces
-import { T } from "./pieces";
+import { T, O, L, J, I, S, Z } from "./pieces";
 
 // Components
 import { Container, FC, Flex, Link, Matrix, Screen } from "./Components";
@@ -27,7 +27,7 @@ const Home: NextPage = () => {
     );
 
     const [cur, setCur] = useState<Cur>({
-        name: "T",
+        name: "Z",
         posX: INIT_LOC[0],
         posY: INIT_LOC[1],
         rot: 0
@@ -56,7 +56,13 @@ const Home: NextPage = () => {
 
         const newM = [...m];
         const pieceMap: any = {
-            T: T(cur.posX, cur.posY, cur.rot)
+            T: T(cur.posX, cur.posY, cur.rot),
+            O: O(cur.posX, cur.posY, cur.rot),
+            L: L(cur.posX, cur.posY, cur.rot),
+            J: J(cur.posX, cur.posY, cur.rot),
+            I: I(cur.posX, cur.posY, cur.rot),
+            S: S(cur.posX, cur.posY, cur.rot),
+            Z: Z(cur.posX, cur.posY, cur.rot)
         };
 
         //draw current piece @ location
