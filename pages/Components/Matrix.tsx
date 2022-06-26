@@ -12,7 +12,7 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
     `;
 
     const Container = styled.div`
-        background-color: rgba(20, 20, 20, 0.5);
+        background-color: rgba(20, 20, 20, 0.25);
     `;
 
     const CheckBox = ({ i1, i2, c }: any) => {

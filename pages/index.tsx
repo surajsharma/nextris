@@ -1,60 +1,77 @@
 import type { NextPage } from "next";
-
-import { useEffect, useState } from "react";
-import { COLS, createAndFillTwoDArray, FPS, INIT_LOC, ROWS } from "./utils";
+import { useEffect, useRef, useState } from "react";
+import {
+    collisionB,
+    COLS,
+    createAndFillTwoDArray,
+    FPS,
+    getNextCur,
+    ROWS
+} from "./utils";
 
 // Pieces
-import { T, O, L, J, I, S, Z } from "./pieces";
+import { I, J, L, O, S, T, Z } from "./pieces";
 
 // Components
 import { Container, FC, Flex, Link, Matrix, Screen } from "./Components";
 
 // Interfaces and Types
-import { Cur } from "./interfaces";
 import { moveDown, moveLeft, moveRight, moveUp, rotate } from "./moves";
 
 const Home: NextPage = () => {
-    const [gameOver, setGameOver] = useState(false);
     const [checked, setChecked] = useState<any>([]);
-    const [drawEmpty, setDrawEmpty] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
+    const [drawEmpty, setDrawEmpty] = useState(true);
 
     const [m, setM] = useState(
-        createAndFillTwoDArray({
-            rows: ROWS,
-            cols: COLS,
-            defaultValue: 0
-        })
+        createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
     );
 
-    const [cur, setCur] = useState<Cur>({
-        name: "Z",
-        posX: INIT_LOC[0],
-        posY: INIT_LOC[1],
-        rot: 0
-    });
+    const [nextCur, setNextCur] = useState<any>(getNextCur());
+    const [cur, setCur] = useState<any>(nextCur);
 
     const resetMatrix = () => {
         console.log("reset");
-
         let newM = createAndFillTwoDArray({
             rows: ROWS,
             cols: COLS,
             defaultValue: 0
         });
-
         setM(newM);
     };
 
     const updateCurPiece = () => {
-        console.log("move piece down", cur.posX);
-        moveDown(m, setCur, cur, updateMatrix);
+        // console.log({
+        //     F: "updateCurPiece",
+        //     gameover: gameOver,
+        //     cur: cur,
+        //     m: m
+        // });
+        if (gameOver || !cur || !m.length) return;
+
+        if (collisionB(m)) {
+            console.log("move piece down", cur?.posX, cur?.posY);
+            moveDown(m, setCur, cur, updateMatrix);
+            return;
+        } else {
+            return;
+            console.clear();
+            console.log("piece hit bottom", collisionB(m));
+        }
     };
 
     const updateMatrix = () => {
-        console.log("update matrix");
-        if (gameOver || !cur) return;
+        // console.log({
+        //     F: "updateMatrix",
+        //     gameover: gameOver,
+        //     cur: cur,
+        //     m: m
+        // });
+        if (gameOver || !cur || !m.length) return;
 
-        const newM = [...m];
+        console.log("update matrix");
+
+        const newM: any = [...m];
         const pieceMap: any = {
             T: T(cur.posX, cur.posY, cur.rot),
             O: O(cur.posX, cur.posY, cur.rot),
@@ -66,41 +83,50 @@ const Home: NextPage = () => {
         };
 
         //draw current piece @ location
-        for (var i = 0; i < ROWS; i++) {
-            for (var j = 0; j < COLS; j++) {
+        for (var i = 0; i < COLS; i++) {
+            for (var j = 0; j < ROWS; j++) {
                 let piece = pieceMap[cur.name];
                 if (JSON.stringify(piece).includes(JSON.stringify([i, j]))) {
-                    newM[i][j] = cur.name;
+                    newM[j][i] = cur.name;
                 } else {
-                    newM[i][j] = 0;
+                    newM[j][i] = 0;
                 }
             }
         }
+
         setM(newM);
+    };
+
+    const piecePipeLine = () => {
+        setCur(nextCur);
+        const afterThis = getNextCur();
+        return setNextCur(afterThis);
     };
 
     const newGame = () => {
         resetMatrix();
-        updateMatrix();
+        return piecePipeLine();
     };
 
-    //Timer/Loop
+    const requestRef = useRef<any>();
+    const previousTimeRef = useRef<any>();
+
+    const gameLoop = (time: any) => {
+        setTimeout(() => {
+            if (previousTimeRef.current != undefined) {
+                if (!gameOver) {
+                    updateCurPiece();
+                }
+            }
+            previousTimeRef.current = time;
+            requestRef.current = requestAnimationFrame(gameLoop);
+        }, 1000 / FPS);
+    };
+
     useEffect(() => {
-        //TODO: pieces
-        //TODO: keyboard
-        newGame();
-        let timer = requestAnimationFrame(function gameLoop(timestamp) {
-            setTimeout(() => {
-                //TODO: check game over
-                //TODO: move cur piece down
-                //TODO: check cur piece settled
-                //TODO: new cur
-                //TODO: set settled pieces
-                //TODO: clear filled rows
-                updateCurPiece();
-                if (gameOver) requestAnimationFrame(gameLoop);
-            }, 1000 / FPS);
-        });
+        console.log("rerender");
+        requestRef.current = requestAnimationFrame(gameLoop);
+        return () => cancelAnimationFrame(requestRef.current);
     }, []);
 
     return (
@@ -118,7 +144,9 @@ const Home: NextPage = () => {
             <Container>
                 <Flex>
                     <button onClick={newGame}>New Game</button>
-                    <button onClick={resetMatrix}>Reset</button>
+                    <button onClick={() => setGameOver(!gameOver)}>
+                        Pause
+                    </button>
                     <input
                         type={"checkbox"}
                         onChange={() => {
@@ -128,7 +156,7 @@ const Home: NextPage = () => {
                     />
                     <button
                         onClick={() => {
-                            console.log(m, cur);
+                            console.log(m, cur, nextCur);
                         }}
                     >
                         SCORE:500
