@@ -11,7 +11,7 @@ import {
     createAndFillTwoDArray,
     INIT_LOC,
     ROWS,
-    FPS,
+    FPS
 } from "./utils";
 
 // Pieces
@@ -99,13 +99,13 @@ const Link = styled.a`
 const Home: NextPage = () => {
     const [gameOver, setGameOver] = useState(false);
     const [checked, setChecked] = useState<any>([]);
-    const [drawEmpty, setDrawEmpty] = useState(true);
+    const [drawEmpty, setDrawEmpty] = useState(false);
 
     const [m, setM] = useState(
         createAndFillTwoDArray({
             rows: ROWS,
             cols: COLS,
-            defaultValue: 0,
+            defaultValue: 0
         })
     );
 
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
         name: "T",
         posX: INIT_LOC[0],
         posY: INIT_LOC[1],
-        rot: 0,
+        rot: 0
     });
 
     const resetMatrix = () => {
@@ -122,8 +122,9 @@ const Home: NextPage = () => {
         let newM = createAndFillTwoDArray({
             rows: ROWS,
             cols: COLS,
-            defaultValue: 0,
+            defaultValue: 0
         });
+
         setM(newM);
     };
 
@@ -138,7 +139,7 @@ const Home: NextPage = () => {
 
         const newM = [...m];
         const pieceMap: any = {
-            T: T(cur.posX, cur.posY, cur.rot),
+            T: T(cur.posX, cur.posY, cur.rot)
         };
 
         //draw current piece @ location
@@ -153,7 +154,6 @@ const Home: NextPage = () => {
             }
         }
         setM(newM);
-        // updateCurPiece();
     };
 
     const newGame = () => {
@@ -163,9 +163,9 @@ const Home: NextPage = () => {
             name: "T",
             posX: INIT_LOC[0],
             posY: INIT_LOC[1],
-            rot: 0,
+            rot: 0
         });
-        setChecked([]);
+        // setChecked([]);
         updateMatrix();
     };
 
@@ -218,17 +218,6 @@ const Home: NextPage = () => {
         console.log("rotated", cur);
     };
 
-    useEffect(() => {
-        console.log("m updated");
-    }, [m]);
-
-    //game over
-    useEffect(() => {
-        if (gameOver) {
-            console.log("game Over");
-        }
-    }, [gameOver]);
-
     //Timer/Loop
     useEffect(() => {
         //TODO: keyboard
@@ -238,8 +227,6 @@ const Home: NextPage = () => {
         //TODO: check game over
         let timer = requestAnimationFrame(function gameLoop(timestamp) {
             newGame();
-            updateMatrix();
-            updateCurPiece();
             setTimeout(() => {
                 if (gameOver) requestAnimationFrame(gameLoop);
             }, 1000 / FPS);
@@ -263,9 +250,10 @@ const Home: NextPage = () => {
                     <button onClick={resetMatrix}>Reset</button>
                     <input
                         type={"checkbox"}
-                        onClick={() => {
+                        onChange={() => {
                             setDrawEmpty(!drawEmpty);
                         }}
+                        checked={drawEmpty}
                     />
                     <button
                         onClick={() => {
@@ -284,7 +272,6 @@ const Home: NextPage = () => {
                     <button onClick={moveUp}>Up</button>
                 </Flex>
             </Container>
-            <Screen></Screen>
         </div>
     );
 };

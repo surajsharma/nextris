@@ -34,14 +34,10 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
         let re: any = [];
         let m = matrix;
 
-        m.map((r: any, i1: number) => {
-            r.map((c: any, i2: number) => {
-                if (drawEmpty) {
-                    re.push(
-                        <CheckBox key={`${i1},${i2}`} i1={i1} i2={i2} c={c} />
-                    );
-                } else {
-                    if (c !== 0) {
+        m &&
+            m.map((r: any, i1: number) => {
+                r.map((c: any, i2: number) => {
+                    if (drawEmpty) {
                         re.push(
                             <CheckBox
                                 key={`${i1},${i2}`}
@@ -51,20 +47,30 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
                             />
                         );
                     } else {
-                        re.push(
-                            <Hidden
-                                type="checkbox"
-                                key={`${i1},${i2}`}
-                            ></Hidden>
-                        );
+                        if (c !== 0) {
+                            re.push(
+                                <CheckBox
+                                    key={`${i1},${i2}`}
+                                    i1={i1}
+                                    i2={i2}
+                                    c={c}
+                                />
+                            );
+                        } else {
+                            re.push(
+                                <Hidden
+                                    type="checkbox"
+                                    key={`${i1},${i2}`}
+                                ></Hidden>
+                            );
+                        }
                     }
-                }
+                });
+                re.push(<br key={`${i1}`} />);
             });
-            re.push(<br key={`${i1}`} />);
-        });
 
         setRendered(re);
-    }, []);
+    }, [matrix]);
 
     return <Container>{rendered}</Container>;
 };
