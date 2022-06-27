@@ -1,16 +1,42 @@
-html,
+.App {
+    font-family: sans-serif;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background-color: black;
+    overflow: hidden;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+h1 {
+    color: orangered;
+    background-color: rgba(116, 8, 8, 0.3);
+    font-size: 2.8em;
+    position: absolute;
+    top: 10;
+    bottom: 0;
+    line-height: 0.2;
+    font-family: sans-serif;
 }
 
-* {
-  box-sizing: border-box;
+sup {
+    font-size: 0.3em;
+    color: lightgreen;
+}
+
+button {
+    background-color: transparent;
+    border: 0;
+    color: #222;
+    font-size: 0.7em;
+    font-weight: 0;
+}
+
+button:hover {
+    color: greenyellow;
+    cursor: pointer;
 }
