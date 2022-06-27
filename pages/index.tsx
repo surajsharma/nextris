@@ -7,21 +7,32 @@ import {
     FPS,
     getNextCur,
     ROWS
-} from "./utils";
+} from "../Constants/utils";
 
 // Pieces
-import { I, J, L, O, S, T, Z } from "./pieces";
+import { I, J, L, O, S, T, Z } from "../Constants/pieces";
 
 // Components
-import { Container, FC, Flex, Link, Matrix, Screen } from "./Components";
+import { Container, FC, Flex, Link, Matrix, Screen } from "../Components";
 
 // Interfaces and Types
-import { moveDown, moveLeft, moveRight, moveUp, rotate } from "./moves";
+import { CheckBox } from "../Components/Checkbox";
+import { Level, Next, Score } from "../Components/Flex";
+import {
+    moveDown,
+    moveLeft,
+    moveRight,
+    moveUp,
+    rotate
+} from "../Constants/moves";
 
 const Home: NextPage = () => {
+    const requestRef = useRef<any>();
+    const previousTimeRef = useRef<any>();
+
     const [checked, setChecked] = useState<any>([]);
     const [gameOver, setGameOver] = useState(false);
-    const [drawEmpty, setDrawEmpty] = useState(true);
+    const [drawEmpty, setDrawEmpty] = useState(false);
 
     const [m, setM] = useState(
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
@@ -29,6 +40,8 @@ const Home: NextPage = () => {
 
     const [nextCur, setNextCur] = useState<any>(getNextCur());
     const [cur, setCur] = useState<any>(nextCur);
+
+    const [score, setScore] = useState(0);
 
     const resetMatrix = () => {
         console.log("reset");
@@ -54,9 +67,10 @@ const Home: NextPage = () => {
             moveDown(m, setCur, cur, updateMatrix);
             return;
         } else {
-            return;
-            console.clear();
+            // console.clear();
             console.log("piece hit bottom", collisionB(m));
+            piecePipeLine();
+            return;
         }
     };
 
@@ -108,10 +122,8 @@ const Home: NextPage = () => {
         return piecePipeLine();
     };
 
-    const requestRef = useRef<any>();
-    const previousTimeRef = useRef<any>();
-
     const gameLoop = (time: any) => {
+        //TODO: optimise this https://gist.github.com/elundmark/38d3596a883521cb24f5
         setTimeout(() => {
             if (previousTimeRef.current != undefined) {
                 if (!gameOver) {
@@ -191,6 +203,28 @@ const Home: NextPage = () => {
                     </button>
                 </Flex>
             </Container>
+            <br />
+            <Flex>
+                <Level>
+                    <p>{FPS}</p>
+                    <p>Level</p>
+                </Level>
+                <Next>
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                    <CheckBox />
+                </Next>
+                <Score>
+                    <p>{score}</p>
+                    <p>Score</p>
+                </Score>
+            </Flex>
         </div>
     );
 };

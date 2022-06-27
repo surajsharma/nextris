@@ -1,34 +1,15 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 
+import { CheckBox, HiddenCheckBox } from "./Checkbox";
+import { MContainer } from "./Container";
+
 export const Matrix = ({ matrix, drawEmpty }: any) => {
     // matrix represents
     // 1) pieces set, cell = 0
     // 2) current piece, cell != 0
 
     const [rendered, setRendered] = useState<any>([]);
-    const Hidden = styled.input`
-        opacity: 0;
-    `;
-
-    const Container = styled.div`
-        background-color: rgba(20, 20, 20, 0.25);
-    `;
-
-    const CheckBox = ({ i1, i2, c }: any) => {
-        return (
-            <input
-                type="checkbox"
-                id={`${i1},${i2}`}
-                name={`${i1},${i2}`}
-                value={`${i1},${i2}`}
-                onChange={() => {
-                    console.log(`@${i1},${i2}`);
-                }}
-                checked={c !== 0}
-            />
-        );
-    };
 
     useEffect(() => {
         let re: any = [];
@@ -58,10 +39,10 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
                             );
                         } else {
                             re.push(
-                                <Hidden
+                                <HiddenCheckBox
                                     type="checkbox"
                                     key={`${i1},${i2}`}
-                                ></Hidden>
+                                ></HiddenCheckBox>
                             );
                         }
                     }
@@ -72,5 +53,5 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
         setRendered(re);
     }, [matrix, drawEmpty]);
 
-    return <Container>{rendered}</Container>;
+    return <MContainer>{rendered}</MContainer>;
 };
