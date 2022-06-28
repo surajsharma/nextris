@@ -77,7 +77,6 @@ export function collisionB(m: any) {
     hit_cell = (JSON.stringify(settled_cells).includes(JSON.stringify(cell)));
   })
 
-
   current_cells.forEach((cell: any) => {
     hit_bottom = cell[0] === ROWS - 1
   })

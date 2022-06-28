@@ -35,9 +35,12 @@ import {
     moveUp,
     rotate
 } from "../Constants/moves";
+import { Cur } from "../Constants/interfaces";
 
 let pause = false;
 let gameOver = false;
+let cur: any = null;
+let nextCur: any = null;
 
 const Home: NextPage = () => {
     const requestRef = useRef<any>();
@@ -51,8 +54,6 @@ const Home: NextPage = () => {
     );
 
     // get next cursor and set it as current
-    const [nextCur, setNextCur] = useState<any>(getNextCur());
-    const [cur, setCur] = useState<any>(getNextCur());
 
     const [score, setScore] = useState(0);
 
@@ -92,39 +93,25 @@ const Home: NextPage = () => {
     };
 
     const updateCurPiece = () => {
-        // console.log({
-        //     F: "updateCurPiece",
-        //     gameover: gameOver,
-        //     cur: cur,
-        //     m: m
-        // });
-        if (gameOver || !cur || !m.length) return;
+        if (gameOver || !m.length) return;
+        if (!cur) piecePipeLine();
 
-        if (!collisionB(m)) {
-            console.log("move piece down", cur?.name, cur?.posX, cur?.posY);
-            moveDown(m, setCur, cur, updateMatrix);
-            return;
-        } else {
+        if (collisionB(m)) {
             // console.clear();
             console.log("piece hit bottom/other cell");
             setFixedPieces();
-
             // checkLinesToClear();
-
             piecePipeLine();
             return;
         }
+
+        // console.log("move piece down", cur?.name, cur?.posX, cur?.posY);
+        return moveDown(m, cur, updateMatrix);
     };
 
     const updateMatrix = () => {
         //draw current piece @ location
 
-        // console.log({
-        //     F: "updateMatrix",
-        //     gameover: gameOver,
-        //     cur: cur,
-        //     m: m
-        // });
         if (gameOver || !cur || !m.length) return;
 
         console.log("update matrix");
@@ -157,10 +144,13 @@ const Home: NextPage = () => {
     };
 
     const piecePipeLine = () => {
-        console.log("set next piece", nextCur);
-        setCur(nextCur);
-        const afterThis = getNextCur();
-        return setNextCur(afterThis);
+        console.log("set next piece");
+        const c = getNextCur();
+        cur = c;
+        const nc = getNextCur();
+        nextCur = nc;
+        console.log("next pieces set ", cur.name, nextCur.name);
+        return;
     };
 
     const newGame = () => {
@@ -187,7 +177,8 @@ const Home: NextPage = () => {
     };
 
     useEffect(() => {
-        console.log("rerender");
+        console.log("render");
+        piecePipeLine();
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
     }, []);
@@ -232,29 +223,19 @@ const Home: NextPage = () => {
                 </Flex>
                 {<Matrix matrix={m} drawEmpty={drawEmpty} paused={pause} />}
                 <Flex>
-                    <button
-                        onClick={() => rotate(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => rotate(m, cur, updateMatrix)}>
                         Rotate
                     </button>
-                    <button
-                        onClick={() => moveLeft(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveLeft(m, cur, updateMatrix)}>
                         Left
                     </button>
-                    <button
-                        onClick={() => moveRight(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveRight(m, cur, updateMatrix)}>
                         Right
                     </button>
-                    <button
-                        onClick={() => moveDown(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveDown(m, cur, updateMatrix)}>
                         Down
                     </button>
-                    <button
-                        onClick={() => moveUp(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveUp(m, cur, updateMatrix)}>
                         Up
                     </button>
                 </Flex>
@@ -267,17 +248,7 @@ const Home: NextPage = () => {
                         <p>{FPS}</p>
                         <p>Level</p>
                     </Level>
-                    <Next>
-                        <CheckBox />
-                        <CheckBox />
-                        <CheckBox />
-                        <CheckBox />
-                        <CheckBox />
-                        <CheckBox />
-                        <CheckBox />
-                        <CheckBox />
-                        <CheckBox />
-                    </Next>
+                    <Next>{nextCur?.name}</Next>
                     <Score>
                         <p>{score}</p>
                         <p>Score</p>
