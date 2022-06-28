@@ -40,3 +40,8 @@ button:hover {
     color: greenyellow;
     cursor: pointer;
 }
+
+button:active {
+    color: orange;
+    cursor: pointer;
+}

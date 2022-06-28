@@ -2,7 +2,7 @@ import { Cur } from "./interfaces";
 import { collisionB, collisionL, collisionR, collisionT, COLS, ROWS } from "./utils";
 
 export const moveDown = (m: any, setCur: Function, cur: Cur, updateMatrix: Function) => {
-  if (collisionB(m)) {
+  if (!collisionB(m)) {
     let n = cur;
     n.posY = (n.posY + 1) % ROWS;
     setCur(n);
