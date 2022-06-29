@@ -15,8 +15,8 @@ export const FC = styled.div`
 `;
 
 export const Next = styled.div`
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background: rgba(90, 90, 90, 0.1);
     display: flex;
     flex-direction: row;
@@ -30,7 +30,7 @@ export const Next = styled.div`
 
 export const Level = styled.div`
     width: 100px;
-    height: 60px;
+    height: 70px;
     display: flex;
     flex-direction: column;
     background: rgba(90, 90, 90, 0.1);
@@ -44,7 +44,7 @@ export const Level = styled.div`
 
 export const Score = styled.div`
     width: 100px;
-    height: 60px;
+    height: 70px;
     display: flex;
     flex-direction: column;
     background: rgba(90, 90, 90, 0.1);

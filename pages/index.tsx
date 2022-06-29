@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import { useEffect, useRef, useState } from "react";
+
 import {
     collisionB,
     COLS,
@@ -13,11 +14,20 @@ import {
 import { I, J, L, O, S, T, Z } from "../Constants/pieces";
 
 // Components
-import { Container, FC, Flex, Link, Matrix, Screen } from "../Components";
+import {
+    Container,
+    FC,
+    Flex,
+    Link,
+    Matrix,
+    Screen,
+    CheckBox,
+    Level,
+    Next,
+    Score
+} from "../Components";
 
 // Interfaces and Types
-import { CheckBox } from "../Components/Checkbox";
-import { Level, Next, Score } from "../Components/Flex";
 import {
     moveDown,
     moveLeft,
@@ -25,21 +35,25 @@ import {
     moveUp,
     rotate
 } from "../Constants/moves";
+import { Cur } from "../Constants/interfaces";
+
+let pause = false;
+let gameOver = false;
+let cur: any = null;
+let nextCur: any = null;
 
 const Home: NextPage = () => {
     const requestRef = useRef<any>();
     const previousTimeRef = useRef<any>();
 
     const [checked, setChecked] = useState<any>([]);
-    const [gameOver, setGameOver] = useState(false);
     const [drawEmpty, setDrawEmpty] = useState(false);
 
     const [m, setM] = useState(
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
     );
 
-    const [nextCur, setNextCur] = useState<any>(getNextCur());
-    const [cur, setCur] = useState<any>(nextCur);
+    // get next cursor and set it as current
 
     const [score, setScore] = useState(0);
 
@@ -53,34 +67,51 @@ const Home: NextPage = () => {
         setM(newM);
     };
 
+    const checkLinesToClear = () => {
+        const newM: any = [...m];
+
+        // //draw current piece @ location
+        for (var i = 0; i < COLS; i++) {
+            for (var j = 0; j < ROWS; j++) {
+                // console.log(`piece ${i} ${j}`, newM[i][j]);
+            }
+        }
+        // setM(newM);
+    };
+
+    const setFixedPieces = () => {
+        const newM = [...m];
+        if (!newM) return;
+        for (var i = 0; i < ROWS; i++) {
+            for (var j = 0; j < COLS; j++) {
+                if (newM[i][j] !== 0) {
+                    newM[i][j] = 1;
+                }
+            }
+        }
+        setM(newM);
+    };
+
     const updateCurPiece = () => {
-        // console.log({
-        //     F: "updateCurPiece",
-        //     gameover: gameOver,
-        //     cur: cur,
-        //     m: m
-        // });
-        if (gameOver || !cur || !m.length) return;
+        if (gameOver || !m.length) return;
+        if (!cur) piecePipeLine();
 
         if (collisionB(m)) {
-            console.log("move piece down", cur?.posX, cur?.posY);
-            moveDown(m, setCur, cur, updateMatrix);
-            return;
-        } else {
             // console.clear();
-            console.log("piece hit bottom", collisionB(m));
+            console.log("piece hit bottom/other cell");
+            setFixedPieces();
+            // checkLinesToClear();
             piecePipeLine();
             return;
         }
+
+        // console.log("move piece down", cur?.name, cur?.posX, cur?.posY);
+        return moveDown(m, cur, updateMatrix);
     };
 
     const updateMatrix = () => {
-        // console.log({
-        //     F: "updateMatrix",
-        //     gameover: gameOver,
-        //     cur: cur,
-        //     m: m
-        // });
+        //draw current piece @ location
+
         if (gameOver || !cur || !m.length) return;
 
         console.log("update matrix");
@@ -96,14 +127,15 @@ const Home: NextPage = () => {
             Z: Z(cur.posX, cur.posY, cur.rot)
         };
 
-        //draw current piece @ location
         for (var i = 0; i < COLS; i++) {
             for (var j = 0; j < ROWS; j++) {
                 let piece = pieceMap[cur.name];
                 if (JSON.stringify(piece).includes(JSON.stringify([i, j]))) {
                     newM[j][i] = cur.name;
                 } else {
-                    newM[j][i] = 0;
+                    if (newM[j][i] !== 1) {
+                        newM[j][i] = 0;
+                    }
                 }
             }
         }
@@ -112,14 +144,19 @@ const Home: NextPage = () => {
     };
 
     const piecePipeLine = () => {
-        setCur(nextCur);
-        const afterThis = getNextCur();
-        return setNextCur(afterThis);
+        console.log("set next piece");
+        const c = getNextCur();
+        cur = c;
+        const nc = getNextCur();
+        nextCur = nc;
+        console.log("next pieces set ", cur.name, nextCur.name);
+        return;
     };
 
     const newGame = () => {
-        resetMatrix();
-        return piecePipeLine();
+        console.log("🚽");
+        return resetMatrix();
+        // return piecePipeLine();
     };
 
     const gameLoop = (time: any) => {
@@ -127,7 +164,11 @@ const Home: NextPage = () => {
         setTimeout(() => {
             if (previousTimeRef.current != undefined) {
                 if (!gameOver) {
-                    updateCurPiece();
+                    if (!pause) {
+                        updateCurPiece();
+                    } else {
+                        console.log("game paused");
+                    }
                 }
             }
             previousTimeRef.current = time;
@@ -136,7 +177,8 @@ const Home: NextPage = () => {
     };
 
     useEffect(() => {
-        console.log("rerender");
+        console.log("render");
+        piecePipeLine();
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
     }, []);
@@ -156,7 +198,12 @@ const Home: NextPage = () => {
             <Container>
                 <Flex>
                     <button onClick={newGame}>New Game</button>
-                    <button onClick={() => setGameOver(!gameOver)}>
+                    <button
+                        onClick={() => {
+                            pause = !pause;
+                            console.log(pause, "pause");
+                        }}
+                    >
                         Pause
                     </button>
                     <input
@@ -174,57 +221,40 @@ const Home: NextPage = () => {
                         SCORE:500
                     </button>
                 </Flex>
-                <Matrix matrix={m} drawEmpty={drawEmpty} />
+                {<Matrix matrix={m} drawEmpty={drawEmpty} paused={pause} />}
                 <Flex>
-                    <button
-                        onClick={() => rotate(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => rotate(m, cur, updateMatrix)}>
                         Rotate
                     </button>
-                    <button
-                        onClick={() => moveLeft(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveLeft(m, cur, updateMatrix)}>
                         Left
                     </button>
-                    <button
-                        onClick={() => moveRight(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveRight(m, cur, updateMatrix)}>
                         Right
                     </button>
-                    <button
-                        onClick={() => moveDown(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveDown(m, cur, updateMatrix)}>
                         Down
                     </button>
-                    <button
-                        onClick={() => moveUp(m, setCur, cur, updateMatrix)}
-                    >
+                    <button onClick={() => moveUp(m, cur, updateMatrix)}>
                         Up
                     </button>
                 </Flex>
             </Container>
-            <br />
-            <Flex>
-                <Level>
-                    <p>{FPS}</p>
-                    <p>Level</p>
-                </Level>
-                <Next>
-                    <CheckBox />
-                    <CheckBox />
-                    <CheckBox />
-                    <CheckBox />
-                    <CheckBox />
-                    <CheckBox />
-                    <CheckBox />
-                    <CheckBox />
-                    <CheckBox />
-                </Next>
-                <Score>
-                    <p>{score}</p>
-                    <p>Score</p>
-                </Score>
-            </Flex>
+
+            <hr />
+            <Container>
+                <Flex>
+                    <Level>
+                        <p>{FPS}</p>
+                        <p>Level</p>
+                    </Level>
+                    <Next>{nextCur?.name}</Next>
+                    <Score>
+                        <p>{score}</p>
+                        <p>Score</p>
+                    </Score>
+                </Flex>
+            </Container>
         </div>
     );
 };

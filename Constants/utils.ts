@@ -1,9 +1,9 @@
-import { Cur } from "./interfaces";
+import { Cur } from "../Constants/interfaces";
 
 export const ROWS = 21;
 export const COLS = 14;
-export const INIT_LOC = { x: 6, y: -1 };
-export const FPS = 1;
+export const INIT_LOC = { x: 6, y: 0 };
+export const FPS = 10;
 
 export function createAndFillTwoDArray({ rows, columns, defaultValue }: any) {
   let A: any = [];
@@ -46,13 +46,47 @@ export function collisionL(m: any) {
 }
 
 export function collisionB(m: any) {
-  return m[ROWS - 1]?.every((val: any, i: any, arr: any) => val === 0);
+  let empty_cells: any = [];
+  let current_cells: any = [];
+  let settled_cells: any = [];
+
+  let hit_cell = false;
+  let hit_bottom = false;
+
+  m.forEach((row: [], r: number) => {
+    row.forEach((cell, c) => {
+      if (cell === 0) {
+        empty_cells.push([r, c]);
+      } else {
+        if (cell === 1) {
+          settled_cells.push([r, c])
+        } else {
+          current_cells.push([r, c]);
+        }
+      }
+    })
+  });
+
+  let next_cells = [...current_cells];
+
+  next_cells.forEach((cell, index) => {
+    next_cells[index] = [cell[0] + 1, cell[1]];
+  });
+
+  next_cells.forEach((cell, index) => {
+    hit_cell = (JSON.stringify(settled_cells).includes(JSON.stringify(cell)));
+  })
+
+  current_cells.forEach((cell: any) => {
+    hit_bottom = cell[0] === ROWS - 1
+  })
+
+  return hit_cell || hit_bottom;
 }
 
 export function collisionT(m: any) {
   return m[0]?.every((val: any, i: any, arr: any) => val === 0);
 }
-
 
 export const getNextCur = (): Cur => {
   const pieces = ["T", "O", "L", "J", "I", "S", "Z"];
