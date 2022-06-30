@@ -51,7 +51,7 @@ export function collisionL(m: any) {
   return transpose(m)[0]?.every((val: any, i: any, arr: any) => val === 0);
 }
 
-export function collisionB(m: any, checked: any) {
+export function collisionB(m: any) {
   let empty_cells: any = [];
   let current_cells: any = [];
   let settled_cells: any = [];
@@ -75,20 +75,17 @@ export function collisionB(m: any, checked: any) {
 
   let next_cells = [...current_cells];
 
-  next_cells.forEach((cell, index) => {
-    next_cells[index] = [cell[0] + 1, cell[1]];
-  });
-
   for (let i = 0; i < next_cells.length; i++) {
+    next_cells[i] = [next_cells[i][0] + 1, next_cells[i][1]]
     hit_cell = (JSON.stringify(settled_cells).indexOf(JSON.stringify(next_cells[i]))) === -1 ? false : true;
-    if (hit_cell) {
+    if (hit_cell)
       break;
-    }
   }
 
-  current_cells.forEach((cell: any) => {
-    hit_bottom = cell[0] === ROWS - 1
-  })
+  for (let i = 0; i < current_cells.length; i++) {
+    hit_bottom = current_cells[i][0] === ROWS - 1
+    if (hit_bottom) break;
+  }
 
   console.log("🚀", { hit: hit_cell, set: settled_cells, next: next_cells })
 
@@ -98,7 +95,7 @@ export function collisionB(m: any, checked: any) {
 }
 
 export function collisionT(m: any) {
-  return m[0]?.every((val: any, i: any, arr: any) => val === 0);
+  return m[0]?.some((val: any, i: any, arr: any) => val === 1);
 }
 
 export const getNextCur = (): Cur => {

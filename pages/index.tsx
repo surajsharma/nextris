@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 import {
     collisionB,
+    collisionT,
     COLS,
     createAndFillTwoDArray,
     FPS,
@@ -107,20 +108,23 @@ const Home: NextPage = () => {
     const updateCurPiece = () => {
         // updates the position of current piece
 
-        if (gameOver || !m.length) return;
+        if (gameOver || !m.length || collisionT(m)) return;
+
         if (!cur) piecePipeLine();
 
-        if (collisionB(m, checked)) {
+        if (collisionB(m)) {
             // console.clear();
             console.log("piece hit bottom/other cell");
             setFixedPieces();
             piecePipeLine();
             // checkLinesToClear();
             return;
+        } else {
+            moveDown(m, checked, cur, updateMatrix);
+            return;
         }
 
         // console.log("move piece down", cur?.name, cur?.posX, cur?.posY);
-        return moveDown(m, checked, cur, updateMatrix);
     };
 
     const updateMatrix = () => {
@@ -131,6 +135,7 @@ const Home: NextPage = () => {
         console.log("update matrix");
 
         const newM: any = [...m];
+
         const pieceMap: any = {
             T: T(cur.posX, cur.posY, cur.rot),
             O: O(cur.posX, cur.posY, cur.rot),
