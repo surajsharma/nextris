@@ -1,15 +1,19 @@
+import next from "next";
 import { Cur } from "../Constants/interfaces";
 
-export const ROWS = 21;
+
+// 280 blocks
+
+export const ROWS = 20;
 export const COLS = 14;
 export const INIT_LOC = { x: 6, y: 0 };
-export const FPS = 10;
+export const FPS = 5;
 
 export function createAndFillTwoDArray({ rows, columns, defaultValue }: any) {
   let A: any = [];
-  for (var i = 0; i < ROWS; i++) {
+  for (let i = 0; i < ROWS; i++) {
     A[i] = [];
-    for (var j = 0; j < COLS; j++) {
+    for (let j = 0; j < COLS; j++) {
       A[i][j] =
         defaultValue === "random"
           ? Math.random() > 0.5
@@ -38,11 +42,73 @@ export function transpose(matrix: any) {
 }
 
 export function collisionR(m: any) {
-  return transpose(m)[COLS - 1]?.every((val: any, i: any, arr: any) => val === 0);
+  let empty_cells: any = [];
+  let current_cells: any = [];
+  let settled_cells: any = [];
+
+  let hit_cell = false;
+  let hit_right = false;
+
+  m.forEach((row: [], r: number) => {
+    row.forEach((cell, c) => {
+      if (cell === 0) {
+        empty_cells.push([r, c]);
+      } else {
+        if (cell === 1) {
+          settled_cells.push([r, c])
+        } else {
+          current_cells.push([r, c]);
+        }
+      }
+    })
+  });
+
+  let next_cells = [...current_cells];
+
+  for (let i = 0; i < next_cells.length; i++) {
+    next_cells[i] = [next_cells[i][0] + 1, next_cells[i][1] + 1]
+    hit_cell = (JSON.stringify(settled_cells).indexOf(JSON.stringify(next_cells[i]))) === -1 ? false : true;
+
+    if (next_cells[i][1] === COLS) hit_right = true;
+    if (hit_cell || hit_right)
+      break;
+  }
+  return hit_cell || hit_right;
 }
 
 export function collisionL(m: any) {
-  return transpose(m)[0]?.every((val: any, i: any, arr: any) => val === 0);
+  let empty_cells: any = [];
+  let current_cells: any = [];
+  let settled_cells: any = [];
+
+  let hit_cell = false;
+  let hit_left = false;
+
+  m.forEach((row: [], r: number) => {
+    row.forEach((cell, c) => {
+      if (cell === 0) {
+        empty_cells.push([r, c]);
+      } else {
+        if (cell === 1) {
+          settled_cells.push([r, c])
+        } else {
+          current_cells.push([r, c]);
+        }
+      }
+    })
+  });
+
+  let next_cells = [...current_cells];
+
+  for (let i = 0; i < next_cells.length; i++) {
+    next_cells[i] = [next_cells[i][0] + 1, next_cells[i][1] - 1]
+    hit_cell = (JSON.stringify(settled_cells).indexOf(JSON.stringify(next_cells[i]))) === -1 ? false : true;
+
+    if (next_cells[i][1] === -1) hit_left = true;
+    if (hit_cell || hit_left)
+      break;
+  }
+  return hit_cell || hit_left;
 }
 
 export function collisionB(m: any) {
@@ -69,23 +135,23 @@ export function collisionB(m: any) {
 
   let next_cells = [...current_cells];
 
-  next_cells.forEach((cell, index) => {
-    next_cells[index] = [cell[0] + 1, cell[1]];
-  });
+  for (let i = 0; i < next_cells.length; i++) {
+    next_cells[i] = [next_cells[i][0] + 1, next_cells[i][1]]
+    hit_cell = (JSON.stringify(settled_cells).indexOf(JSON.stringify(next_cells[i]))) === -1 ? false : true;
+    if (hit_cell)
+      break;
+  }
 
-  next_cells.forEach((cell, index) => {
-    hit_cell = (JSON.stringify(settled_cells).includes(JSON.stringify(cell)));
-  })
-
-  current_cells.forEach((cell: any) => {
-    hit_bottom = cell[0] === ROWS - 1
-  })
+  for (let i = 0; i < current_cells.length; i++) {
+    hit_bottom = current_cells[i][0] === ROWS - 1
+    if (hit_bottom) break;
+  }
 
   return hit_cell || hit_bottom;
 }
 
 export function collisionT(m: any) {
-  return m[0]?.every((val: any, i: any, arr: any) => val === 0);
+  return m[0]?.some((val: any, i: any, arr: any) => val === 1);
 }
 
 export const getNextCur = (): Cur => {

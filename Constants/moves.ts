@@ -5,11 +5,12 @@ export const moveDown = (m: any, cur: Cur, updateMatrix: Function) => {
   if (collisionB(m)) return;
   if (!cur) return;
   let n = cur;
+
   n.posY = (n.posY + 1) % ROWS;
+
   cur = n;
   updateMatrix();
   // console.log("moved down", cur, n, collisionB(m));
-
 };
 
 export const moveUp = (m: any, cur: Cur, updateMatrix: Function) => {
@@ -23,7 +24,7 @@ export const moveUp = (m: any, cur: Cur, updateMatrix: Function) => {
 };
 
 export const moveLeft = (m: any, cur: Cur, updateMatrix: Function) => {
-  if (collisionL(m)) {
+  if (!collisionL(m)) {
     let n = cur;
     n.posX = n.posX - 1;
     cur = n;
@@ -33,7 +34,7 @@ export const moveLeft = (m: any, cur: Cur, updateMatrix: Function) => {
 };
 
 export const moveRight = (m: any, cur: Cur, updateMatrix: Function) => {
-  if (collisionR(m)) {
+  if (!collisionR(m)) {
     let n = cur;
     n.posX = (n.posX + 1) % COLS;
     cur = n;
