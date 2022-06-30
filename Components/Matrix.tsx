@@ -25,6 +25,9 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
                                 i1={i1}
                                 i2={i2}
                                 c={c}
+                                clickHandler={() =>
+                                    console.log(`m@ ${i1},${i2} = ${m[i1][i2]}`)
+                                }
                             />
                         );
                     } else {
@@ -35,6 +38,11 @@ export const Matrix = ({ matrix, drawEmpty }: any) => {
                                     i1={i1}
                                     i2={i2}
                                     c={c}
+                                    clickHandler={() =>
+                                        console.log(
+                                            `m@ ${i1},${i2} = ${m[i1][i2]}`
+                                        )
+                                    }
                                 />
                             );
                         } else {

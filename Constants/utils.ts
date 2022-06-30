@@ -1,6 +1,10 @@
+import next from "next";
 import { Cur } from "../Constants/interfaces";
 
-export const ROWS = 21;
+
+// 280 blocks
+
+export const ROWS = 20;
 export const COLS = 14;
 export const INIT_LOC = { x: 6, y: 0 };
 export const FPS = 10;
@@ -38,14 +42,16 @@ export function transpose(matrix: any) {
 }
 
 export function collisionR(m: any) {
+  console.log('detect collision right');
   return transpose(m)[COLS - 1]?.every((val: any, i: any, arr: any) => val === 0);
 }
 
 export function collisionL(m: any) {
+  console.log('detect collision left');
   return transpose(m)[0]?.every((val: any, i: any, arr: any) => val === 0);
 }
 
-export function collisionB(m: any) {
+export function collisionB(m: any, checked: any) {
   let empty_cells: any = [];
   let current_cells: any = [];
   let settled_cells: any = [];
@@ -73,14 +79,21 @@ export function collisionB(m: any) {
     next_cells[index] = [cell[0] + 1, cell[1]];
   });
 
-  next_cells.forEach((cell, index) => {
-    hit_cell = (JSON.stringify(settled_cells).includes(JSON.stringify(cell)));
-  })
+  for (let i = 0; i < next_cells.length; i++) {
+    hit_cell = (JSON.stringify(settled_cells).indexOf(JSON.stringify(next_cells[i]))) === -1 ? false : true;
+    if (hit_cell) {
+      break;
+    }
+  }
 
   current_cells.forEach((cell: any) => {
     hit_bottom = cell[0] === ROWS - 1
   })
 
+  console.log("🚀", { hit: hit_cell, set: settled_cells, next: next_cells })
+
+  // console.log("🚀 ~ file: utils.ts ~ line 78 ~ next_cells.forEach ~ settled_cells", settled_cells)
+  // console.log("🚀 ~ file: utils.ts ~ line 86 ~ collisionB ~ hit_cell || hit_bottom", hit_cell || hit_bottom, hit_bottom, hit_cell)
   return hit_cell || hit_bottom;
 }
 

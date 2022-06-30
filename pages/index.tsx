@@ -49,25 +49,30 @@ const Home: NextPage = () => {
     const [checked, setChecked] = useState<any>([]);
     const [drawEmpty, setDrawEmpty] = useState(false);
 
+    const [score, setScore] = useState(0);
     const [m, setM] = useState(
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
     );
 
-    // get next cursor and set it as current
-
-    const [score, setScore] = useState(0);
-
     const resetMatrix = () => {
-        console.log("reset");
-        let newM = createAndFillTwoDArray({
-            rows: ROWS,
-            cols: COLS,
-            defaultValue: 0
-        });
+        // resets the matrix for a new game, sets new current/next pieces
+        const newM = [...m];
+
+        if (!newM) return;
+
+        for (var i = 0; i < ROWS; i++) {
+            for (var j = 0; j < COLS; j++) {
+                if (newM[i][j] !== 0) {
+                    newM[i][j] = 0;
+                }
+            }
+        }
+        piecePipeLine();
         setM(newM);
     };
 
     const checkLinesToClear = () => {
+        // checks and clears set lines in the matrix, increments score
         const newM: any = [...m];
 
         // //draw current piece @ location
@@ -80,37 +85,46 @@ const Home: NextPage = () => {
     };
 
     const setFixedPieces = () => {
+        // updates matrix to reprsenty settled pieces
+
         const newM = [...m];
+        const newChecked = [];
+
         if (!newM) return;
+
         for (var i = 0; i < ROWS; i++) {
             for (var j = 0; j < COLS; j++) {
                 if (newM[i][j] !== 0) {
                     newM[i][j] = 1;
+                    newChecked.push([i, j]);
                 }
             }
         }
+        setChecked([...newChecked]);
         setM(newM);
     };
 
     const updateCurPiece = () => {
+        // updates the position of current piece
+
         if (gameOver || !m.length) return;
         if (!cur) piecePipeLine();
 
-        if (collisionB(m)) {
+        if (collisionB(m, checked)) {
             // console.clear();
             console.log("piece hit bottom/other cell");
             setFixedPieces();
-            // checkLinesToClear();
             piecePipeLine();
+            // checkLinesToClear();
             return;
         }
 
         // console.log("move piece down", cur?.name, cur?.posX, cur?.posY);
-        return moveDown(m, cur, updateMatrix);
+        return moveDown(m, checked, cur, updateMatrix);
     };
 
     const updateMatrix = () => {
-        //draw current piece @ location
+        //inserts current piece @ location
 
         if (gameOver || !cur || !m.length) return;
 
@@ -129,11 +143,16 @@ const Home: NextPage = () => {
 
         for (var i = 0; i < COLS; i++) {
             for (var j = 0; j < ROWS; j++) {
-                let piece = pieceMap[cur.name];
-                if (JSON.stringify(piece).includes(JSON.stringify([i, j]))) {
-                    newM[j][i] = cur.name;
-                } else {
-                    if (newM[j][i] !== 1) {
+                if (newM[j][i] !== 1) {
+                    let piece = pieceMap[cur.name];
+                    if (
+                        JSON.stringify(piece).indexOf(JSON.stringify([i, j])) !=
+                        -1
+                    ) {
+                        // show the piece
+                        newM[j][i] = cur.name;
+                    } else {
+                        //don't touch settled pieces
                         newM[j][i] = 0;
                     }
                 }
@@ -144,7 +163,8 @@ const Home: NextPage = () => {
     };
 
     const piecePipeLine = () => {
-        console.log("set next piece");
+        // sets current and next pieces
+
         const c = getNextCur();
         cur = c;
         const nc = getNextCur();
@@ -167,7 +187,7 @@ const Home: NextPage = () => {
                     if (!pause) {
                         updateCurPiece();
                     } else {
-                        console.log("game paused");
+                        // console.log("game paused");
                     }
                 }
             }
@@ -178,11 +198,13 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         console.log("render");
-        piecePipeLine();
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
     }, []);
 
+    useEffect(() => {
+        console.log(checked, "checked");
+    }, [checked]);
     return (
         <div className="App">
             <Screen></Screen>
@@ -198,30 +220,21 @@ const Home: NextPage = () => {
             <Container>
                 <Flex>
                     <button onClick={newGame}>New Game</button>
-                    <button
-                        onClick={() => {
-                            pause = !pause;
-                            console.log(pause, "pause");
-                        }}
-                    >
-                        Pause
-                    </button>
+                    <button onClick={() => (pause = !pause)}>Pause</button>
                     <input
                         type={"checkbox"}
-                        onChange={() => {
-                            setDrawEmpty(!drawEmpty);
-                        }}
+                        onChange={() => setDrawEmpty(!drawEmpty)}
                         checked={drawEmpty}
                     />
                     <button
                         onClick={() => {
-                            console.log(m, cur, nextCur);
+                            console.log(m, cur, nextCur, checked);
                         }}
                     >
                         SCORE:500
                     </button>
                 </Flex>
-                {<Matrix matrix={m} drawEmpty={drawEmpty} paused={pause} />}
+                {<Matrix matrix={m} drawEmpty={drawEmpty} />}
                 <Flex>
                     <button onClick={() => rotate(m, cur, updateMatrix)}>
                         Rotate

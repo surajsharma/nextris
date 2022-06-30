@@ -1,15 +1,16 @@
 import { Cur } from "../Constants/interfaces";
 import { collisionB, collisionL, collisionR, collisionT, COLS, ROWS } from "../Constants/utils";
 
-export const moveDown = (m: any, cur: Cur, updateMatrix: Function) => {
-  if (collisionB(m)) return;
+export const moveDown = (m: any, checked: any, cur: Cur, updateMatrix: Function) => {
+  if (collisionB(m, checked)) return;
   if (!cur) return;
   let n = cur;
+
   n.posY = (n.posY + 1) % ROWS;
+
   cur = n;
   updateMatrix();
   // console.log("moved down", cur, n, collisionB(m));
-
 };
 
 export const moveUp = (m: any, cur: Cur, updateMatrix: Function) => {
