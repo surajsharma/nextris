@@ -11,5 +11,5 @@ export const Container = styled.div`
 `;
 
 export const MContainer = styled.div`
-    background-color: rgba(20, 20, 20, 0.25);
+    background-color: rgba(20, 20, 20, 0.5);
 `;

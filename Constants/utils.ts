@@ -7,7 +7,7 @@ import { Cur } from "../Constants/interfaces";
 export const ROWS = 20;
 export const COLS = 14;
 export const INIT_LOC = { x: 6, y: 0 };
-export const FPS = 10;
+export const FPS = 1;
 
 export function createAndFillTwoDArray({ rows, columns, defaultValue }: any) {
   let A: any = [];
@@ -42,13 +42,73 @@ export function transpose(matrix: any) {
 }
 
 export function collisionR(m: any) {
-  console.log('detect collision right');
-  return transpose(m)[COLS - 1]?.every((val: any, i: any, arr: any) => val === 0);
+  let empty_cells: any = [];
+  let current_cells: any = [];
+  let settled_cells: any = [];
+
+  let hit_cell = false;
+  let hit_right = false;
+
+  m.forEach((row: [], r: number) => {
+    row.forEach((cell, c) => {
+      if (cell === 0) {
+        empty_cells.push([r, c]);
+      } else {
+        if (cell === 1) {
+          settled_cells.push([r, c])
+        } else {
+          current_cells.push([r, c]);
+        }
+      }
+    })
+  });
+
+  let next_cells = [...current_cells];
+
+  for (let i = 0; i < next_cells.length; i++) {
+    next_cells[i] = [next_cells[i][0] + 1, next_cells[i][1] + 1]
+    hit_cell = (JSON.stringify(settled_cells).indexOf(JSON.stringify(next_cells[i]))) === -1 ? false : true;
+
+    if (next_cells[i][1] === COLS) hit_right = true;
+    if (hit_cell || hit_right)
+      break;
+  }
+  return hit_cell || hit_right;
 }
 
 export function collisionL(m: any) {
-  console.log('detect collision left');
-  return transpose(m)[0]?.every((val: any, i: any, arr: any) => val === 0);
+  let empty_cells: any = [];
+  let current_cells: any = [];
+  let settled_cells: any = [];
+
+  let hit_cell = false;
+  let hit_left = false;
+
+  m.forEach((row: [], r: number) => {
+    row.forEach((cell, c) => {
+      if (cell === 0) {
+        empty_cells.push([r, c]);
+      } else {
+        if (cell === 1) {
+          settled_cells.push([r, c])
+        } else {
+          current_cells.push([r, c]);
+        }
+      }
+    })
+  });
+
+  let next_cells = [...current_cells];
+
+  for (let i = 0; i < next_cells.length; i++) {
+    next_cells[i] = [next_cells[i][0] + 1, next_cells[i][1] - 1]
+    hit_cell = (JSON.stringify(settled_cells).indexOf(JSON.stringify(next_cells[i]))) === -1 ? false : true;
+
+    if (next_cells[i][1] === -1) hit_left = true;
+    if (hit_cell || hit_left)
+      break;
+  }
+  return hit_cell || hit_left;
 }
 
 export function collisionB(m: any) {
@@ -87,10 +147,6 @@ export function collisionB(m: any) {
     if (hit_bottom) break;
   }
 
-  console.log("🚀", { hit: hit_cell, set: settled_cells, next: next_cells })
-
-  // console.log("🚀 ~ file: utils.ts ~ line 78 ~ next_cells.forEach ~ settled_cells", settled_cells)
-  // console.log("🚀 ~ file: utils.ts ~ line 86 ~ collisionB ~ hit_cell || hit_bottom", hit_cell || hit_bottom, hit_bottom, hit_cell)
   return hit_cell || hit_bottom;
 }
 

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 import {
     collisionB,
+    collisionL,
     collisionT,
     COLS,
     createAndFillTwoDArray,
@@ -19,13 +20,12 @@ import {
     Container,
     FC,
     Flex,
+    Level,
     Link,
     Matrix,
-    Screen,
-    CheckBox,
-    Level,
     Next,
-    Score
+    Score,
+    Screen
 } from "../Components";
 
 // Interfaces and Types
@@ -36,7 +36,6 @@ import {
     moveUp,
     rotate
 } from "../Constants/moves";
-import { Cur } from "../Constants/interfaces";
 
 let pause = false;
 let gameOver = false;
@@ -47,7 +46,6 @@ const Home: NextPage = () => {
     const requestRef = useRef<any>();
     const previousTimeRef = useRef<any>();
 
-    const [checked, setChecked] = useState<any>([]);
     const [drawEmpty, setDrawEmpty] = useState(false);
 
     const [score, setScore] = useState(0);
@@ -73,23 +71,16 @@ const Home: NextPage = () => {
     };
 
     const checkLinesToClear = () => {
-        // checks and clears set lines in the matrix, increments score
         const newM: any = [...m];
-
-        // //draw current piece @ location
         for (var i = 0; i < COLS; i++) {
-            for (var j = 0; j < ROWS; j++) {
-                // console.log(`piece ${i} ${j}`, newM[i][j]);
-            }
+            for (var j = 0; j < ROWS; j++) {}
         }
-        // setM(newM);
     };
 
     const setFixedPieces = () => {
         // updates matrix to reprsenty settled pieces
 
         const newM = [...m];
-        const newChecked = [];
 
         if (!newM) return;
 
@@ -97,11 +88,9 @@ const Home: NextPage = () => {
             for (var j = 0; j < COLS; j++) {
                 if (newM[i][j] !== 0) {
                     newM[i][j] = 1;
-                    newChecked.push([i, j]);
                 }
             }
         }
-        setChecked([...newChecked]);
         setM(newM);
     };
 
@@ -113,14 +102,11 @@ const Home: NextPage = () => {
         if (!cur) piecePipeLine();
 
         if (collisionB(m)) {
-            // console.clear();
-            console.log("piece hit bottom/other cell");
             setFixedPieces();
             piecePipeLine();
-            // checkLinesToClear();
             return;
         } else {
-            moveDown(m, checked, cur, updateMatrix);
+            moveDown(m, cur, updateMatrix);
             return;
         }
 
@@ -201,17 +187,38 @@ const Home: NextPage = () => {
         }, 1000 / FPS);
     };
 
+    const handleKeyboard = (event: any) => {
+        console.log(event.key);
+
+        if (event.key === " ") {
+            rotate(m, cur, updateMatrix);
+        }
+
+        if (event.key === "ArrowLeft") {
+            moveLeft(m, cur, updateMatrix);
+        }
+
+        if (event.key === "ArrowRight") {
+            moveRight(m, cur, updateMatrix);
+        }
+
+        if (event.key === "ArrowDown") {
+            moveDown(m, cur, updateMatrix);
+        }
+
+        if (event.key === "p" || event.key === "P") {
+            pause = !pause;
+        }
+    };
+
     useEffect(() => {
         console.log("render");
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
     }, []);
 
-    useEffect(() => {
-        console.log(checked, "checked");
-    }, [checked]);
     return (
-        <div className="App">
+        <div className="App" onKeyDown={handleKeyboard} tabIndex={-1}>
             <Screen></Screen>
             <FC>
                 <h1>
@@ -233,7 +240,7 @@ const Home: NextPage = () => {
                     />
                     <button
                         onClick={() => {
-                            console.log(m, cur, nextCur, checked);
+                            console.log(m, cur, nextCur);
                         }}
                     >
                         SCORE:500

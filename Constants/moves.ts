@@ -1,8 +1,8 @@
 import { Cur } from "../Constants/interfaces";
 import { collisionB, collisionL, collisionR, collisionT, COLS, ROWS } from "../Constants/utils";
 
-export const moveDown = (m: any, checked: any, cur: Cur, updateMatrix: Function) => {
-  if (collisionB(m, checked)) return;
+export const moveDown = (m: any, cur: Cur, updateMatrix: Function) => {
+  if (collisionB(m)) return;
   if (!cur) return;
   let n = cur;
 
@@ -24,7 +24,7 @@ export const moveUp = (m: any, cur: Cur, updateMatrix: Function) => {
 };
 
 export const moveLeft = (m: any, cur: Cur, updateMatrix: Function) => {
-  if (collisionL(m)) {
+  if (!collisionL(m)) {
     let n = cur;
     n.posX = n.posX - 1;
     cur = n;
@@ -34,7 +34,7 @@ export const moveLeft = (m: any, cur: Cur, updateMatrix: Function) => {
 };
 
 export const moveRight = (m: any, cur: Cur, updateMatrix: Function) => {
-  if (collisionR(m)) {
+  if (!collisionR(m)) {
     let n = cur;
     n.posX = (n.posX + 1) % COLS;
     cur = n;
