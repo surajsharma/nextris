@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 
 import {
     collisionB,
-    collisionL,
     collisionT,
     COLS,
     createAndFillTwoDArray,
@@ -59,8 +58,8 @@ const Home: NextPage = () => {
 
         if (!newM) return;
 
-        for (var i = 0; i < ROWS; i++) {
-            for (var j = 0; j < COLS; j++) {
+        for (let i = 0; i < ROWS; i++) {
+            for (let j = 0; j < COLS; j++) {
                 if (newM[i][j] !== 0) {
                     newM[i][j] = 0;
                 }
@@ -70,11 +69,58 @@ const Home: NextPage = () => {
         setM(newM);
     };
 
-    const checkLinesToClear = () => {
-        const newM: any = [...m];
-        for (var i = 0; i < COLS; i++) {
-            for (var j = 0; j < ROWS; j++) {}
+    const clearSetLines = () => {
+        let rowsToClear: any = [];
+        let newM: any = [...m];
+
+        for (let i = 0; i < ROWS; i++) {
+            if (m[i].every((cell: any) => cell === 1)) {
+                rowsToClear.push(i);
+            }
         }
+
+        while (rowsToClear.length) {
+            let rowToPop = rowsToClear.pop();
+            let rowsAbove: any = [];
+            let rowsBelow: any = [];
+
+            for (let i = 0; i < rowToPop; i++) {
+                rowsAbove.push(m[i]);
+            }
+
+            for (let i = rowToPop; i < ROWS - 1; i++) {
+                rowsBelow.push(m[i]);
+            }
+
+            for (let i = 0; i < ROWS; i++) {
+                if (i === rowToPop) {
+                    for (let j = 0; j < COLS; j++) {
+                        if (newM[i][j] === 1) {
+                            newM[i][j] = 0;
+                        }
+                    }
+
+                    for (let i = 0; i < rowsAbove.length; i++) {
+                        console.log(i);
+                        newM[i] = rowsAbove[i];
+                    }
+
+                    const pad = ROWS + 1 - newM.length;
+
+                    for (let i = 0; i < pad; i++) {
+                        let row = [];
+                        for (let j = 0; j < COLS; j++) {
+                            row.push(0);
+                        }
+                        newM.unshift(row);
+                        newM.pop();
+                    }
+                }
+            }
+        }
+        console.log(newM, "⚗️");
+        setM(newM);
+        return;
     };
 
     const setFixedPieces = () => {
@@ -84,8 +130,8 @@ const Home: NextPage = () => {
 
         if (!newM) return;
 
-        for (var i = 0; i < ROWS; i++) {
-            for (var j = 0; j < COLS; j++) {
+        for (let i = 0; i < ROWS; i++) {
+            for (let j = 0; j < COLS; j++) {
                 if (newM[i][j] !== 0) {
                     newM[i][j] = 1;
                 }
@@ -106,6 +152,7 @@ const Home: NextPage = () => {
             piecePipeLine();
             return;
         } else {
+            console.log("moving down", m);
             moveDown(m, cur, updateMatrix);
             return;
         }
@@ -118,7 +165,7 @@ const Home: NextPage = () => {
 
         if (gameOver || !cur || !m.length) return;
 
-        console.log("update matrix");
+        console.log("update matrix", m);
 
         const newM: any = [...m];
 
@@ -132,9 +179,10 @@ const Home: NextPage = () => {
             Z: Z(cur.posX, cur.posY, cur.rot)
         };
 
-        for (var i = 0; i < COLS; i++) {
-            for (var j = 0; j < ROWS; j++) {
+        for (let i = 0; i < COLS; i++) {
+            for (let j = 0; j < ROWS; j++) {
                 if (newM[j][i] !== 1) {
+                    //cell is not settled, either current piece or empty
                     let piece = pieceMap[cur.name];
                     if (
                         JSON.stringify(piece).indexOf(JSON.stringify([i, j])) !=
@@ -143,13 +191,17 @@ const Home: NextPage = () => {
                         // show the piece
                         newM[j][i] = cur.name;
                     } else {
-                        //don't touch settled pieces
+                        //clear piece trail
                         newM[j][i] = 0;
                     }
                 }
             }
         }
 
+        console.log(
+            "🚀 ~ file: index.tsx ~ line 208 ~ updateMatrix ~ newM",
+            newM
+        );
         setM(newM);
     };
 
@@ -177,6 +229,7 @@ const Home: NextPage = () => {
                 if (!gameOver) {
                     if (!pause) {
                         updateCurPiece();
+                        clearSetLines();
                     } else {
                         // console.log("game paused");
                     }
@@ -204,6 +257,10 @@ const Home: NextPage = () => {
 
         if (event.key === "ArrowDown") {
             moveDown(m, cur, updateMatrix);
+        }
+
+        if (event.key === "ArrowUp") {
+            rotate(m, cur, updateMatrix);
         }
 
         if (event.key === "p" || event.key === "P") {

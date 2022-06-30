@@ -7,13 +7,13 @@ import { Cur } from "../Constants/interfaces";
 export const ROWS = 20;
 export const COLS = 14;
 export const INIT_LOC = { x: 6, y: 0 };
-export const FPS = 1;
+export const FPS = 5;
 
 export function createAndFillTwoDArray({ rows, columns, defaultValue }: any) {
   let A: any = [];
-  for (var i = 0; i < ROWS; i++) {
+  for (let i = 0; i < ROWS; i++) {
     A[i] = [];
-    for (var j = 0; j < COLS; j++) {
+    for (let j = 0; j < COLS; j++) {
       A[i][j] =
         defaultValue === "random"
           ? Math.random() > 0.5
