@@ -50,7 +50,7 @@ export function collisionR(m: any) {
   let hit_right = false;
 
   m.forEach((row: [], r: number) => {
-    row.forEach((cell, c) => {
+    row && row.forEach((cell, c) => {
       if (cell === 0) {
         empty_cells.push([r, c]);
       } else {
@@ -85,7 +85,7 @@ export function collisionL(m: any) {
   let hit_left = false;
 
   m.forEach((row: [], r: number) => {
-    row.forEach((cell, c) => {
+    row && row.forEach((cell, c) => {
       if (cell === 0) {
         empty_cells.push([r, c]);
       } else {
@@ -120,7 +120,7 @@ export function collisionB(m: any) {
   let hit_bottom = false;
 
   m.forEach((row: [], r: number) => {
-    row.forEach((cell, c) => {
+    row && row.forEach((cell, c) => {
       if (cell === 0) {
         empty_cells.push([r, c]);
       } else {
