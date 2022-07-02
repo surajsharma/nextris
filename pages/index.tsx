@@ -113,6 +113,9 @@ const Home: NextPage = () => {
 
             clearM = [pad].concat(rowsAbove, rowsBelow);
             rowsToClear.pop();
+            setScore((oldScore) => {
+                return oldScore + 1;
+            });
         });
 
         //all rows to be cleared processed, set new matrix
