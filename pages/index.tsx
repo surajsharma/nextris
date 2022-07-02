@@ -93,29 +93,32 @@ const Home: NextPage = () => {
         let newM: any = m;
         let clearM: any = m;
 
-        while (rowsToClear.length) {
+        rowsToClear.forEach((rowToPop: number, index: number) => {
             let pad: any = [];
-            // for each row to be cleared
 
-            // pop the blank row
-            // shift the preceding piece (values) forward by one row
-            // add a blank row on top
-            const rowToPop = rowsToClear.pop();
-            const rowsAbove = newM.slice(0, rowToPop);
-
-            const rowsBelow = newM.slice(rowToPop + 1, ROWS);
             for (let j = 0; j < COLS; j++) {
                 pad.push(0);
             }
 
+            // blank for each row to be cleared
+            const rowsAbove =
+                index === 0
+                    ? newM.slice(0, rowToPop)
+                    : clearM.slice(0, rowToPop);
+
+            const rowsBelow =
+                index === 0
+                    ? newM.slice(rowToPop + 1, ROWS)
+                    : clearM.slice(rowToPop + 1, ROWS);
+
             clearM = [pad].concat(rowsAbove, rowsBelow);
-        }
-        console.log(clearM);
+            rowsToClear.pop();
+        });
+
         //all rows to be cleared processed, set new matrix
         for (let i = 0; i < ROWS; i++) {
             newM[i] = clearM[i];
         }
-
         setM([...newM]);
     };
 
@@ -156,7 +159,6 @@ const Home: NextPage = () => {
         if (collisionB(m)) {
             // console.log("collided, getting new pieces", m);
             setFixedPieces();
-            clearSetLines();
             piecePipeLine();
             return;
         } else {
@@ -240,6 +242,7 @@ const Home: NextPage = () => {
                 if (!gameOver) {
                     if (!pause) {
                         updateCurPiece();
+                        clearSetLines();
                     } else {
                         // // console.log("game paused");
                     }
