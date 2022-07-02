@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 import {
     collisionB,
@@ -54,7 +54,11 @@ const Home: NextPage = () => {
 
     const resetMatrix = () => {
         // resets the matrix for a new game, sets new current/next pieces
-        const newM = [...m];
+        // console.log(
+        // "🚀 ~ file: index.tsx ~ line 72 ~ resetMatrix ~ resetMatrix",
+        // resetMatrix
+        // );
+        const newM = m;
 
         if (!newM) return;
 
@@ -67,67 +71,60 @@ const Home: NextPage = () => {
         }
         piecePipeLine();
         setM(newM);
-        console.log("matrix reset", m);
+        // console.log("matrix reset", m);
     };
 
     const clearSetLines = () => {
+        // console.log(
+        // "🚀 ~ file: index.tsx ~ line 105 ~ clearSetLines ~ clearSetLines",
+        // clearSetLines
+        // );
+
         let rowsToClear: any = [];
-        let newM: any = m;
 
         for (let i = 0; i < ROWS; i++) {
-            if (newM[i].every((cell: any) => cell === 1)) {
+            if (m[i].every((cell: any) => cell === 1)) {
                 rowsToClear.push(i);
             }
         }
 
-        console.log("LTC", rowsToClear, newM, m);
+        if (!rowsToClear.length) return [];
 
-        if (!rowsToClear.length) return;
+        let newM: any = m;
+        let clearM: any = m;
 
         while (rowsToClear.length) {
+            let pad: any = [];
             // for each row to be cleared
 
-            let rowToPop = rowsToClear.pop();
-            let rowsAbove: any = [];
-            let rowsBelow: any = [];
+            // pop the blank row
+            // shift the preceding piece (values) forward by one row
+            // add a blank row on top
+            const rowToPop = rowsToClear.pop();
+            const rowsAbove = newM.slice(0, rowToPop);
 
-            for (let i = 0; i < ROWS; i++) {
-                //go through the rows
-                if (i === rowToPop) {
-                    // until you reach the row to be removed
-
-                    //get rows below the row to be cleared
-                    for (let i = 0; i < rowToPop; i++) {
-                        rowsAbove.push(m[i]);
-                    }
-
-                    //get rows below the row to be cleared
-                    for (let i = rowToPop + 1; i < ROWS; i++) {
-                        rowsBelow.push(m[i]);
-                    }
-
-                    const pad = ROWS - [...rowsAbove, ...rowsBelow].length;
-                    //add blank rows on top
-
-                    newM = [...rowsAbove, ...rowsBelow];
-
-                    for (let i = 0; i < pad; i++) {
-                        let row = [];
-                        for (let j = 0; j < COLS; j++) {
-                            row.push(0);
-                        }
-                        newM.unshift(row);
-                    }
-                    setM(newM);
-                }
+            const rowsBelow = newM.slice(rowToPop + 1, ROWS);
+            for (let j = 0; j < COLS; j++) {
+                pad.push(0);
             }
+
+            clearM = [pad].concat(rowsAbove, rowsBelow);
         }
-        console.log(newM, "⚗️ clear set lines");
-        return;
+        console.log(clearM);
+        //all rows to be cleared processed, set new matrix
+        for (let i = 0; i < ROWS; i++) {
+            newM[i] = clearM[i];
+        }
+
+        setM([...newM]);
     };
 
     const setFixedPieces = () => {
         // updates matrix to reprsenty settled pieces
+        // console.log(
+        // "🚀 ~ file: index.tsx ~ line 124 ~ setFixedPieces ~ setFixedPieces",
+        // setFixedPieces
+        // );
 
         const newM = m;
 
@@ -142,36 +139,45 @@ const Home: NextPage = () => {
         }
 
         setM([...newM]);
-        console.log("setFixedPieces", m);
+        // console.log("setFixedPieces", m);
     };
 
     const updateCurPiece = () => {
         // updates the position of current piece
+        // console.log(
+        // "🚀 ~ file: index.tsx ~ line 144 ~ updateCurPiece ~ updateCurPiece",
+        // updateCurPiece
+        // );
 
         if (gameOver || !m.length || collisionT(m)) return;
 
         if (!cur) piecePipeLine();
 
         if (collisionB(m)) {
-            console.log("collided, getting new pieces", m);
+            // console.log("collided, getting new pieces", m);
             setFixedPieces();
+            clearSetLines();
             piecePipeLine();
             return;
         } else {
-            console.log("moving down", m);
+            // console.log("moving down", m);
             moveDown(m, cur, updateMatrix);
             return;
         }
     };
 
     const updateMatrix = () => {
+        // console.log(
+        // "🚀 ~ file: index.tsx ~ line 186 ~ updateMatrix ~ updateMatrix",
+        // updateMatrix
+        // );
         //inserts current piece @ location
 
         if (gameOver || !cur || !m.length) return;
 
-        console.log("update matrix", m);
+        // // console.log("update matrix", m);
 
-        const newM: any = m;
+        let newM: any = m;
 
         const pieceMap: any = {
             T: T(cur.posX, cur.posY, cur.rot),
@@ -203,22 +209,26 @@ const Home: NextPage = () => {
         }
 
         setM([...newM]);
-        console.log("🚀 updateMatrix ~ newM", newM);
+        // // // // console.log("🚀 updateMatrix ~ newM", newM);
     };
 
     const piecePipeLine = () => {
         // sets current and next pieces
+        // console.log(
+        // "🚀 ~ file: index.tsx ~ line 197 ~ piecePipeLine ~ piecePipeLine",
+        // piecePipeLine
+        // );
 
         const c = getNextCur();
         cur = c;
         const nc = getNextCur();
         nextCur = nc;
-        console.log("next pieces set ", cur.name, nextCur.name);
+        // console.log("next pieces set ", cur.name, nextCur.name);
         return;
     };
 
     const newGame = () => {
-        console.log("🚽 new game");
+        // console.log("🚽 new game");
         return resetMatrix();
         // return piecePipeLine();
     };
@@ -230,9 +240,8 @@ const Home: NextPage = () => {
                 if (!gameOver) {
                     if (!pause) {
                         updateCurPiece();
-                        clearSetLines();
                     } else {
-                        // console.log("game paused");
+                        // // console.log("game paused");
                     }
                 }
             }
@@ -242,7 +251,7 @@ const Home: NextPage = () => {
     };
 
     const handleKeyboard = (event: any) => {
-        console.log(event.key);
+        // console.log(event.key);
 
         if (event.key === " ") {
             rotate(m, cur, updateMatrix);
@@ -276,7 +285,7 @@ const Home: NextPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log(m, "🐂");
+        // console.log("new m rerender", m);
     }, [m]);
 
     return (
@@ -302,7 +311,7 @@ const Home: NextPage = () => {
                     />
                     <button
                         onClick={() => {
-                            console.log(m, cur, nextCur);
+                            // console.log(m, cur, nextCur);
                         }}
                     >
                         SCORE:500
