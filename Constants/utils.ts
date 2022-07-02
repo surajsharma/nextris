@@ -7,7 +7,7 @@ import { Cur } from "../Constants/interfaces";
 export const ROWS = 20;
 export const COLS = 14;
 export const INIT_LOC = { x: 6, y: 0 };
-export const FPS = 5;
+export const FPS = 10;
 
 export function createAndFillTwoDArray({ rows, columns, defaultValue }: any) {
   let A: any = [];
