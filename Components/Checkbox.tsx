@@ -8,7 +8,7 @@ export const CheckBox = ({ i1, i2, c, clickHandler }: any) => {
             name={`${i1},${i2}`}
             value={`${i1},${i2}`}
             onChange={clickHandler}
-            checked={c === 0}
+            checked={c !== 0}
         />
     );
 };
