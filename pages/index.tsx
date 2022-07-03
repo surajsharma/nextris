@@ -23,7 +23,8 @@ import {
     Link,
     Matrix,
     Score,
-    Screen
+    NextPiece,
+    FlexR
 } from "../Components";
 
 // Interfaces and Types
@@ -34,9 +35,6 @@ import {
     moveUp,
     rotate
 } from "../Constants/moves";
-import styled from "@emotion/styled";
-import { FlexR } from "../Components/Flex";
-import { NextPiece } from "../Components/Next";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -257,7 +255,7 @@ const Home: NextPage = () => {
     };
 
     const handleKeyboard = (event: any) => {
-        // console.log(event.key);
+        console.log(event.key);
 
         if (event.key === " ") {
             pause = !pause;
