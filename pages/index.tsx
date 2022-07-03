@@ -22,7 +22,6 @@ import {
     Level,
     Link,
     Matrix,
-    Next,
     Score,
     Screen
 } from "../Components";
@@ -37,6 +36,7 @@ import {
 } from "../Constants/moves";
 import styled from "@emotion/styled";
 import { FlexR } from "../Components/Flex";
+import { NextPiece } from "../Components/Next";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -338,7 +338,7 @@ const Home: NextPage = () => {
                             <p>{FPS}</p>
                             <p>Level</p>
                         </Level>
-                        <Next>{nextCur?.name}</Next>
+                        <NextPiece nextCur={nextCur} />
                         <Score>
                             <p>{score}</p>
                             <p>Score</p>

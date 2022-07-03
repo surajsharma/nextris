@@ -24,7 +24,7 @@ export const FC = styled.div`
     align-items: center;
 `;
 
-export const Next = styled.div`
+export const NextContainer = styled.div`
     width: 70px;
     height: 70px;
     background: rgba(90, 90, 90, 0.1);
@@ -35,7 +35,6 @@ export const Next = styled.div`
     align-items: center;
     align-content: center;
     justify-content: center;
-    border: 1px solid rgba(90, 90, 190, 0.1);
 `;
 
 export const Level = styled.div`
