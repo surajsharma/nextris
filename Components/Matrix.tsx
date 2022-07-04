@@ -1,6 +1,4 @@
-import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { render } from "react-dom";
 
 import { CheckBox, HiddenCheckBox } from "./Checkbox";
 import { MContainer } from "./Container";

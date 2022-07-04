@@ -7,7 +7,7 @@ import { Cur } from "../Constants/interfaces";
 export const ROWS = 20;
 export const COLS = 14;
 export const INIT_LOC = { x: 6, y: 0 };
-export const FPS = 10;
+export const FPS = 2;
 
 export function createAndFillTwoDArray({ rows, columns, defaultValue }: any) {
   let A: any = [];
@@ -164,4 +164,16 @@ export const getNextCur = (): Cur => {
     posX: INIT_LOC.x,
     rot: rotated[Math.floor(Math.random() * rotated.length)]
   };
+};
+
+
+export const setAcceleratingTimeout = (callback: Function, factor: number) => {
+  let internalCallback = function (score) {
+    return function () {
+      setTimeout(internalCallback, factor / ++score);
+      callback();
+    }
+  }(0);
+
+  return setTimeout(internalCallback, factor);
 };

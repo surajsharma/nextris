@@ -1,12 +1,11 @@
 import type { NextPage } from "next";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
     collisionB,
     collisionT,
     COLS,
     createAndFillTwoDArray,
-    FPS,
     getNextCur,
     ROWS
 } from "../Constants/utils";
@@ -19,12 +18,12 @@ import {
     Container,
     FC,
     Flex,
+    FlexR,
     Level,
     Link,
     Matrix,
-    Next,
-    Score,
-    Screen
+    NextPiece,
+    Score
 } from "../Components";
 
 // Interfaces and Types
@@ -224,10 +223,8 @@ const Home: NextPage = () => {
         // piecePipeLine
         // );
 
-        const c = getNextCur();
-        cur = c;
-        const nc = getNextCur();
-        nextCur = nc;
+        cur = nextCur;
+        nextCur = getNextCur();
         // console.log("next pieces set ", cur.name, nextCur.name);
         return;
     };
@@ -238,29 +235,48 @@ const Home: NextPage = () => {
         // return piecePipeLine();
     };
 
-    const gameLoop = (time: any) => {
+    var fps = score ? 1 + score * 0.01 : 1;
+    var then: any = undefined;
+    var interval = 1000 - fps;
+    var delta;
+    const gameLoop = (now: any) => {
         //TODO: optimise this https://gist.github.com/elundmark/38d3596a883521cb24f5
-        setTimeout(() => {
+        // timer = window.setTimeout(() => {
+
+        if (!then) {
+            then = now;
+        }
+        requestAnimationFrame(gameLoop);
+        delta = now - then;
+
+        if (delta > interval) {
+            then = now - (delta % interval);
+
+            // ... Code for Drawing the Frame ...
             if (previousTimeRef.current != undefined) {
                 if (!gameOver) {
                     if (!pause) {
                         updateCurPiece();
                         clearSetLines();
                     } else {
-                        // // console.log("game paused");
+                        // console.log("game paused");
                     }
                 }
             }
-            previousTimeRef.current = time;
+            previousTimeRef.current = now;
             requestRef.current = requestAnimationFrame(gameLoop);
-        }, 1000 / FPS);
+
+            console.log("timer", interval, fps);
+        }
+
+        // }, 1000 / FPS);
     };
 
     const handleKeyboard = (event: any) => {
-        // console.log(event.key);
+        console.log(event.key);
 
         if (event.key === " ") {
-            rotate(m, cur, updateMatrix);
+            pause = !pause;
         }
 
         if (event.key === "ArrowLeft") {
@@ -286,26 +302,20 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         console.log("render/begin");
+        nextCur = getNextCur();
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
     }, []);
 
     useEffect(() => {
-        // console.log("new m rerender", m);
-    }, [m]);
+        console.log("score!");
+        if (score != 0) {
+            gameLoop(previousTimeRef.current);
+        }
+    }, [score]);
 
     return (
         <div className="App" onKeyDown={handleKeyboard} tabIndex={-1}>
-            <Screen></Screen>
-            <FC>
-                <h1>
-                    <i>
-                        selectris<sup>TM</sup>
-                    </i>
-                    <br />
-                    <Link>ゼロイーブン</Link>
-                </h1>
-            </FC>
             <Container>
                 <Flex>
                     <button onClick={newGame}>New Game</button>
@@ -320,7 +330,7 @@ const Home: NextPage = () => {
                             // console.log(m, cur, nextCur);
                         }}
                     >
-                        SCORE:500
+                        SCORE:{score}
                     </button>
                 </Flex>
                 {<Matrix matrix={m} drawEmpty={drawEmpty} />}
@@ -344,19 +354,30 @@ const Home: NextPage = () => {
             </Container>
 
             <hr />
-            <Container>
-                <Flex>
-                    <Level>
-                        <p>{FPS}</p>
-                        <p>Level</p>
-                    </Level>
-                    <Next>{nextCur?.name}</Next>
-                    <Score>
-                        <p>{score}</p>
-                        <p>Score</p>
-                    </Score>
-                </Flex>
-            </Container>
+            <FlexR>
+                <Container>
+                    <Flex>
+                        <Level>
+                            <p>{score}</p>
+                            <p>Level</p>
+                        </Level>
+                        <NextPiece nextCur={nextCur} />
+                        <Score>
+                            <p>{score}</p>
+                            <p>Score</p>
+                        </Score>
+                    </Flex>
+                </Container>
+                <FC>
+                    <h1>
+                        <i>
+                            selectrix<sup>TM</sup>
+                        </i>
+                        <br />
+                        <Link>ゼロイーブン</Link>
+                    </h1>
+                </FC>
+            </FlexR>
         </div>
     );
 };
