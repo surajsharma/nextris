@@ -6,7 +6,6 @@ import {
     collisionT,
     COLS,
     createAndFillTwoDArray,
-    FPS,
     getNextCur,
     ROWS
 } from "../Constants/utils";
@@ -19,12 +18,12 @@ import {
     Container,
     FC,
     Flex,
+    FlexR,
     Level,
     Link,
     Matrix,
-    Score,
     NextPiece,
-    FlexR
+    Score
 } from "../Components";
 
 // Interfaces and Types
@@ -236,22 +235,41 @@ const Home: NextPage = () => {
         // return piecePipeLine();
     };
 
-    const gameLoop = (time: any) => {
+    var fps = score ? 1 + score * 0.01 : 1;
+    var then: any = undefined;
+    var interval = 1000 - fps;
+    var delta;
+    const gameLoop = (now: any) => {
         //TODO: optimise this https://gist.github.com/elundmark/38d3596a883521cb24f5
-        setTimeout(() => {
+        // timer = window.setTimeout(() => {
+
+        if (!then) {
+            then = now;
+        }
+        requestAnimationFrame(gameLoop);
+        delta = now - then;
+
+        if (delta > interval) {
+            then = now - (delta % interval);
+
+            // ... Code for Drawing the Frame ...
             if (previousTimeRef.current != undefined) {
                 if (!gameOver) {
                     if (!pause) {
                         updateCurPiece();
                         clearSetLines();
                     } else {
-                        // // console.log("game paused");
+                        // console.log("game paused");
                     }
                 }
             }
-            previousTimeRef.current = time;
+            previousTimeRef.current = now;
             requestRef.current = requestAnimationFrame(gameLoop);
-        }, 1000 / FPS);
+
+            console.log("timer", interval, fps);
+        }
+
+        // }, 1000 / FPS);
     };
 
     const handleKeyboard = (event: any) => {
@@ -288,6 +306,13 @@ const Home: NextPage = () => {
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
     }, []);
+
+    useEffect(() => {
+        console.log("score!");
+        if (score != 0) {
+            gameLoop(previousTimeRef.current);
+        }
+    }, [score]);
 
     return (
         <div className="App" onKeyDown={handleKeyboard} tabIndex={-1}>
@@ -333,7 +358,7 @@ const Home: NextPage = () => {
                 <Container>
                     <Flex>
                         <Level>
-                            <p>{FPS}</p>
+                            <p>{score}</p>
                             <p>Level</p>
                         </Level>
                         <NextPiece nextCur={nextCur} />
