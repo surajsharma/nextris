@@ -6,7 +6,6 @@ import {
     collisionT,
     COLS,
     createAndFillTwoDArray,
-    FPS,
     getNextCur,
     ROWS
 } from "../Constants/utils";
@@ -35,21 +34,23 @@ import {
     moveUp,
     rotate
 } from "../Constants/moves";
+import { SideBar } from "../Components/Flex";
+import { GameContainer } from "../Components/Container";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
+
 let cur: any = null;
 let nextCur: any = null;
 
-var then: any = undefined;
-var delta;
+var then: number = 0;
+var delta: number = 0;
 
 const Home: NextPage = () => {
     const requestRef = useRef<any>();
     const previousTimeRef = useRef<any>();
 
     const [drawEmpty, setDrawEmpty] = useState(false);
-
     const [score, setScore] = useState(0);
 
     var interval = useRef(100 - score);
@@ -156,10 +157,6 @@ const Home: NextPage = () => {
 
     const updateCurPiece = () => {
         // updates the position of current piece
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 144 ~ updateCurPiece ~ updateCurPiece",
-        // updateCurPiece
-        // );
 
         if (gameOver || !m.length || collisionT(m)) return;
 
@@ -171,7 +168,7 @@ const Home: NextPage = () => {
             piecePipeLine();
             return;
         } else {
-            // console.log("moving down", m);
+            console.log("moving down", m);
             moveDown(m, cur, updateMatrix);
             return;
         }
@@ -225,21 +222,15 @@ const Home: NextPage = () => {
 
     const piecePipeLine = () => {
         // sets current and next pieces
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 197 ~ piecePipeLine ~ piecePipeLine",
-        // piecePipeLine
-        // );
-
         cur = nextCur;
         nextCur = getNextCur();
-        // console.log("next pieces set ", cur.name, nextCur.name);
         return;
     };
 
     const newGame = () => {
-        // console.log("🚽 new game");
+        console.clear();
+        setScore(0);
         return resetMatrix();
-        // return piecePipeLine();
     };
 
     const gameLoop = (now: any) => {
@@ -251,24 +242,24 @@ const Home: NextPage = () => {
 
         if (delta > interval.current) {
             then = now - (delta % interval.current);
-            if (previousTimeRef.current != undefined) {
-                if (!gameOver) {
-                    if (!pause) {
-                        updateCurPiece();
-                        clearSetLines();
-                    } else {
-                        // console.log("game paused");
-                    }
+
+            if (!gameOver) {
+                if (!pause) {
+                    updateCurPiece();
+                    clearSetLines();
+                } else {
+                    // console.log("game paused");
                 }
             }
+
             previousTimeRef.current = now;
-            console.log("timer", interval.current, FPS);
+            console.log("timer", interval.current - score * 10);
         }
         requestRef.current = requestAnimationFrame(gameLoop);
     };
 
     const handleKeyboard = (event: any) => {
-        console.log(event.key);
+        // console.log(event.key);
 
         if (event.key === " ") {
             pause = !pause;
@@ -303,8 +294,8 @@ const Home: NextPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log("score!");
-        interval.current = 500 - score;
+        // console.log("score!");
+        interval.current = 500 - score * 10;
     }, [score]);
 
     return (
@@ -320,13 +311,26 @@ const Home: NextPage = () => {
                     />
                     <button
                         onClick={() => {
-                            // console.log(m, cur, nextCur);
+                            console.log(cur, nextCur);
                         }}
                     >
                         SCORE:{score}
                     </button>
                 </Flex>
-                {<Matrix matrix={m} drawEmpty={drawEmpty} />}
+                <GameContainer>
+                    {<Matrix matrix={m} drawEmpty={drawEmpty} />}
+                    <SideBar>
+                        <NextPiece nextCur={nextCur} />
+                        <Level>
+                            <p>{score}</p>
+                            <p>Level</p>
+                        </Level>
+                        <Score>
+                            <p>{score * 10}</p>
+                            <p>Score</p>
+                        </Score>
+                    </SideBar>
+                </GameContainer>
                 <Flex>
                     <button onClick={() => rotate(m, cur, updateMatrix)}>
                         Rotate
@@ -345,22 +349,7 @@ const Home: NextPage = () => {
                     </button>
                 </Flex>
             </Container>
-
-            <hr />
             <FlexR>
-                <Container>
-                    <Flex>
-                        <Level>
-                            <p>{score}</p>
-                            <p>Level</p>
-                        </Level>
-                        <NextPiece nextCur={nextCur} />
-                        <Score>
-                            <p>{score}</p>
-                            <p>Score</p>
-                        </Score>
-                    </Flex>
-                </Container>
                 <FC>
                     <h1>
                         <i>
