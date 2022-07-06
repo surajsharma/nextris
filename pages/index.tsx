@@ -7,7 +7,8 @@ import {
     COLS,
     createAndFillTwoDArray,
     getNextCur,
-    ROWS
+    ROWS,
+    useSwipe
 } from "../Constants/utils";
 
 // Pieces
@@ -287,6 +288,26 @@ const Home: NextPage = () => {
             pause = !pause;
         }
     };
+
+    const swipeLeft = () => {
+        moveLeft(m, cur, updateMatrix);
+    };
+
+    const swipeRight = () => {
+        moveRight(m, cur, updateMatrix);
+    };
+    const swipeUp = () => {
+        rotate(m, cur, updateMatrix);
+    };
+    const swipeDown = () => {
+        moveDown(m, cur, updateMatrix);
+    };
+    const swipe = useSwipe({
+        left: swipeRight,
+        right: swipeLeft,
+        up: swipeDown,
+        down: swipeUp
+    });
 
     useEffect(() => {
         console.log("render/begin");

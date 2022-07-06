@@ -26,7 +26,12 @@ export const SideBar = styled.div`
     flex-direction: column;
 
     font-family: sans-serif;
-    background-color: #001; ;
+    background-color: #001;
+    @media only screen and (max-width: 428px) {
+        flex-direction: row;
+        height: 100px;
+        background-color: #000;
+    }
 `;
 
 export const FC = styled.div`
@@ -59,6 +64,9 @@ export const Level = styled.div`
     align-content: center;
     flex-direction: column;
     text-align: center;
+    @media only screen and (max-width: 428px) {
+        margin-top: 40px;
+    }
 `;
 
 export const Score = styled.div`
@@ -71,4 +79,7 @@ export const Score = styled.div`
     align-content: center;
     flex-direction: column;
     text-align: center;
+    @media only screen and (max-width: 428px) {
+        margin-top: 40px;
+    }
 `;
