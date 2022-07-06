@@ -49,6 +49,7 @@ var delta: number = 0;
 const Home: NextPage = () => {
     const requestRef = useRef<any>();
     const previousTimeRef = useRef<any>();
+    const selectris = useRef<any>();
 
     const [drawEmpty, setDrawEmpty] = useState(false);
     const [score, setScore] = useState(0);
@@ -247,6 +248,7 @@ const Home: NextPage = () => {
                 if (!pause) {
                     updateCurPiece();
                     clearSetLines();
+                    selectris.current.focus();
                 } else {
                     // console.log("game paused");
                 }
@@ -299,7 +301,12 @@ const Home: NextPage = () => {
     }, [score]);
 
     return (
-        <div className="App" onKeyDown={handleKeyboard} tabIndex={-1}>
+        <div
+            ref={selectris}
+            className="App"
+            onKeyDown={handleKeyboard}
+            tabIndex={-1}
+        >
             <OuterContainer>
                 <Container>
                     <Flex>
@@ -325,17 +332,16 @@ const Home: NextPage = () => {
                         </SideBar>
                     </GameContainer>
                 </Container>
-                <FlexR>
-                    <FC>
-                        <h1>
-                            <i>
-                                selectrix<sup>TM</sup>
-                            </i>
-                            <br />
-                            <Link>ゼロイーブン</Link>
-                        </h1>
-                    </FC>
-                </FlexR>
+
+                <FC>
+                    <h1>
+                        <i>
+                            selectrix<sup>TM</sup>
+                        </i>
+                        <br />
+                        <Link>ゼロイーブン</Link>
+                    </h1>
+                </FC>
             </OuterContainer>
         </div>
     );

@@ -16,11 +16,6 @@ export function NextPiece({ nextCur }: any) {
     };
 
     let piece = pieceMap[nextCur?.name];
-    console.log(
-        "🚀 ~ file: Next.tsx ~ line 19 ~ NextPiece ~ piece",
-        piece,
-        nextCur
-    );
 
     let nm = [
         [5, -1],

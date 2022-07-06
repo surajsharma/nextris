@@ -2,6 +2,11 @@ import styled from "@emotion/styled";
 
 export const OuterContainer = styled.div`
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* align items vertically, in this case */
+
+    align-items: center; /* align items horizontally, in this case */
 `;
 
 export const Container = styled.div`
