@@ -13,7 +13,7 @@ export const OuterContainer = styled.div`
 
 export const Container = styled.div`
     border-radius: 8px;
-    border: 1px solid rgba(90, 90, 190, 0.25);
+    border: 1px solid rgba(90, 90, 190, 0.2);
     background-color: black;
 `;
 
@@ -28,7 +28,7 @@ export const GameContainer = styled.div`
 `;
 
 export const MContainer = styled.div`
-    background-color: rgba(20, 20, 120, 0.2);
+    background-color: rgba(20, 20, 120, 0.3);
     @media only screen and (max-width: 428px) {
         background-color: rgba(20, 20, 120, 0);
     }

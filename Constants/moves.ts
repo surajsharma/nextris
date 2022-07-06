@@ -45,10 +45,12 @@ export const moveRight = (m: any, cur: Cur, updateMatrix: Function) => {
 };
 
 export const rotate = (m: [any], cur: Cur, updateMatrix: Function) => {
+  if (collisionL(m) && collisionR(m)) return;
   let n = cur;
   let r = (cur.rot + 90) % 360;
   n.rot = r;
   cur = n;
   updateMatrix();
+
   // console.log("rotated", cur);
 };

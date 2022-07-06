@@ -6,6 +6,10 @@
     border: 0;
     margin: 0;
     padding: 0;
+    outline: none;
+    outline-style: none;
+    box-shadow: none;
+    border-color: transparent;
 }
 body {
     background-color: #001;
@@ -15,6 +19,10 @@ body {
     border: 0;
     margin: 0;
     padding: 0;
+    outline: none;
+    outline-style: none;
+    box-shadow: none;
+    border-color: transparent;
 }
 
 h1 {

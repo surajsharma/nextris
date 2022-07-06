@@ -27,10 +27,15 @@ export const SideBar = styled.div`
 
     font-family: sans-serif;
     background-color: #001;
+
     @media only screen and (max-width: 428px) {
         flex-direction: row;
-        height: 100px;
-        background-color: #000;
+        height: 130px;
+        /* Created with https://www.css-gradient.com */
+        background: #01246c;
+        background: -webkit-linear-gradient(bottom, #01246c, #000000);
+        background: -moz-linear-gradient(bottom, #01246c, #000000);
+        background: linear-gradient(to top, #01246c, #000000);
     }
 `;
 
@@ -41,7 +46,12 @@ export const FC = styled.div`
 `;
 
 export const NextContainer = styled.div`
-    width: 100px;
+    width: 85px;
+
+    @media only screen and (max-width: 428px) {
+        width: 100px;
+    }
+
     height: 100px;
     display: flex;
     flex-direction: row;
@@ -51,7 +61,6 @@ export const NextContainer = styled.div`
     align-content: center;
     justify-content: center;
     margin-top: 15px;
-    margin-left: 10px;
 `;
 
 export const Level = styled.div`

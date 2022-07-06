@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 
 import {
     collisionB,
+    collisionL,
+    collisionR,
     collisionT,
     COLS,
     createAndFillTwoDArray,
@@ -19,7 +21,6 @@ import {
     Container,
     FC,
     Flex,
-    FlexR,
     Level,
     Link,
     Matrix,
@@ -28,15 +29,9 @@ import {
 } from "../Components";
 
 // Interfaces and Types
-import {
-    moveDown,
-    moveLeft,
-    moveRight,
-    moveUp,
-    rotate
-} from "../Constants/moves";
-import { SideBar } from "../Components/Flex";
 import { GameContainer, OuterContainer } from "../Components/Container";
+import { SideBar } from "../Components/Flex";
+import { moveDown, moveLeft, moveRight, rotate } from "../Constants/moves";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -261,6 +256,20 @@ const Home: NextPage = () => {
         requestRef.current = requestAnimationFrame(gameLoop);
     };
 
+    const outOfBounds = () => {
+        let out = 0;
+        for (let i = 0; i < COLS; i++) {
+            for (let j = 0; j < ROWS; j++) {
+                if (m[i][j] !== 0 && m[i][j] !== 1 && m[i][j] !== undefined) {
+                    out += 1;
+                    if (out === 3) {
+                        return j;
+                    }
+                }
+            }
+        }
+        return null;
+    };
     const handleKeyboard = (event: any) => {
         // console.log(event.key);
 
@@ -281,6 +290,11 @@ const Home: NextPage = () => {
         }
 
         if (event.key === "ArrowUp") {
+            const out = outOfBounds();
+            if (out !== null) {
+                // alert("piece out");
+            }
+            if (collisionL(m) && collisionR(m)) return;
             rotate(m, cur, updateMatrix);
         }
 

@@ -195,8 +195,8 @@ export const useSwipe = ({ left, right, up, down }: { left?: () => void; right?:
       touchCoordsRef.current.touchStart.time = Date.now();
     };
     const handleTouchEnd = (e: TouchEvent) => {
-      const threshold = 150;
-      const swipeSpeed = 1; // sec;
+      const threshold = 10;
+      const swipeSpeed = 2; // sec;
       const touchEndX = e.changedTouches[0].clientX;
       const touchEndY = e.changedTouches[0].clientY;
       const touchStartX = touchCoordsRef.current.touchStart.x;
