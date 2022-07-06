@@ -62,10 +62,10 @@ export const Z = (row: number, col: number, rot: number): [any] => {
 
 export const I = (row: number, col: number, rot: number): [any] => {
   const rotationMatrix: any = {
-    180: [[row, col], [row + 1, col], [row - 1, col]],
-    90: [[row, col], [row, col + 1], [row, col - 1]],
-    0: [[row, col], [row + 1, col], [row - 1, col]],
-    270: [[row, col], [row, col + 1], [row, col - 1]]
+    180: [[row, col], [row + 1, col], [row - 1, col], [row + 2, col]],
+    90: [[row, col], [row, col + 1], [row, col - 1], [row, col + 2]],
+    0: [[row, col], [row + 1, col], [row - 1, col], [row + 2, col]],
+    270: [[row, col], [row, col + 1], [row, col - 1], [row, col + 2]]
   }
   return rotationMatrix[rot];
 }

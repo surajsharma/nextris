@@ -34,7 +34,11 @@ export function NextPiece({ nextCur }: any) {
         [5, 1],
         [6, 1],
         [7, 1],
-        [8, 1]
+        [8, 1],
+        [5, 2],
+        [6, 2],
+        [7, 2],
+        [8, 2]
     ];
 
     return (

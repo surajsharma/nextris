@@ -22,9 +22,11 @@ export const SideBar = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 10%;
-    color: white;
+    color: orange;
     flex-direction: column;
+
+    font-family: sans-serif;
+    background-color: #001; ;
 `;
 
 export const FC = styled.div`
@@ -36,7 +38,6 @@ export const FC = styled.div`
 export const NextContainer = styled.div`
     width: 100px;
     height: 100px;
-    background: rgba(90, 90, 90, 0);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -44,32 +45,30 @@ export const NextContainer = styled.div`
     align-items: center;
     align-content: center;
     justify-content: center;
+    margin-top: 15px;
+    margin-left: 10px;
 `;
 
 export const Level = styled.div`
     width: 100px;
-    height: 70px;
+    height: 100px;
     display: flex;
     flex-direction: column;
-    background: rgba(90, 90, 90, 0.1);
     border-radius: 8px;
     align-items: center;
     align-content: center;
     flex-direction: column;
-    line-height: 0;
-    border: 1px solid rgba(90, 90, 190, 0.1);
+    text-align: center;
 `;
 
 export const Score = styled.div`
     width: 100px;
-    height: 70px;
+    height: 100px;
     display: flex;
     flex-direction: column;
-    background: rgba(90, 90, 90, 0.1);
     border-radius: 8px;
     align-items: center;
     align-content: center;
     flex-direction: column;
-    line-height: 0;
-    border: 1px solid rgba(90, 90, 190, 0.1);
+    text-align: center;
 `;

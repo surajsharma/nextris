@@ -35,7 +35,7 @@ import {
     rotate
 } from "../Constants/moves";
 import { SideBar } from "../Components/Flex";
-import { GameContainer } from "../Components/Container";
+import { GameContainer, OuterContainer } from "../Components/Container";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -300,66 +300,43 @@ const Home: NextPage = () => {
 
     return (
         <div className="App" onKeyDown={handleKeyboard} tabIndex={-1}>
-            <Container>
-                <Flex>
-                    <button onClick={newGame}>New Game</button>
-                    <button onClick={() => (pause = !pause)}>Pause</button>
-                    <input
-                        type={"checkbox"}
-                        onChange={() => setDrawEmpty(!drawEmpty)}
-                        checked={drawEmpty}
-                    />
-                    <button
-                        onClick={() => {
-                            console.log(cur, nextCur);
-                        }}
-                    >
-                        SCORE:{score}
-                    </button>
-                </Flex>
-                <GameContainer>
-                    {<Matrix matrix={m} drawEmpty={drawEmpty} />}
-                    <SideBar>
-                        <NextPiece nextCur={nextCur} />
-                        <Level>
-                            <p>{score}</p>
-                            <p>Level</p>
-                        </Level>
-                        <Score>
-                            <p>{score * 10}</p>
-                            <p>Score</p>
-                        </Score>
-                    </SideBar>
-                </GameContainer>
-                <Flex>
-                    <button onClick={() => rotate(m, cur, updateMatrix)}>
-                        Rotate
-                    </button>
-                    <button onClick={() => moveLeft(m, cur, updateMatrix)}>
-                        Left
-                    </button>
-                    <button onClick={() => moveRight(m, cur, updateMatrix)}>
-                        Right
-                    </button>
-                    <button onClick={() => moveDown(m, cur, updateMatrix)}>
-                        Down
-                    </button>
-                    <button onClick={() => moveUp(m, cur, updateMatrix)}>
-                        Up
-                    </button>
-                </Flex>
-            </Container>
-            <FlexR>
-                <FC>
-                    <h1>
-                        <i>
-                            selectrix<sup>TM</sup>
-                        </i>
-                        <br />
-                        <Link>ゼロイーブン</Link>
-                    </h1>
-                </FC>
-            </FlexR>
+            <OuterContainer>
+                <Container>
+                    <Flex>
+                        <button onClick={newGame}>New Game</button>
+                        <button
+                            onClick={() => {
+                                console.log(cur, nextCur);
+                            }}
+                        >
+                            SCORE:{score}
+                        </button>
+                    </Flex>
+                    <GameContainer>
+                        <Matrix matrix={m} drawEmpty={drawEmpty} />
+                        <SideBar>
+                            <NextPiece nextCur={nextCur} />
+                            <Level>
+                                <h2>📶 {score}</h2>
+                            </Level>
+                            <Score>
+                                <h2>🧮 {score * 10}</h2>
+                            </Score>
+                        </SideBar>
+                    </GameContainer>
+                </Container>
+                <FlexR>
+                    <FC>
+                        <h1>
+                            <i>
+                                selectrix<sup>TM</sup>
+                            </i>
+                            <br />
+                            <Link>ゼロイーブン</Link>
+                        </h1>
+                    </FC>
+                </FlexR>
+            </OuterContainer>
         </div>
     );
 };
