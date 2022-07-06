@@ -5,8 +5,10 @@ export const OuterContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center; /* align items vertically, in this case */
-
     align-items: center; /* align items horizontally, in this case */
+    @media only screen and (max-width: 316px) {
+        display: none;
+    }
 `;
 
 export const Container = styled.div`
@@ -20,8 +22,14 @@ export const GameContainer = styled.div`
     align-content: center;
     justify-content: space-evenly;
     width: 100%;
+    @media only screen and (max-width: 428px) {
+        flex-direction: column;
+    }
 `;
 
 export const MContainer = styled.div`
     background-color: rgba(20, 20, 120, 0.2);
+    @media only screen and (max-width: 428px) {
+        background-color: rgba(20, 20, 120, 0);
+    }
 `;
