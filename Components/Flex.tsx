@@ -18,6 +18,15 @@ export const FlexR = styled.div`
     height: 100vh;
 `;
 
+export const SideBar = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 10%;
+    color: white;
+    flex-direction: column;
+`;
+
 export const FC = styled.div`
     display: flex;
     flex-direction: column;
@@ -25,9 +34,9 @@ export const FC = styled.div`
 `;
 
 export const NextContainer = styled.div`
-    width: 70px;
-    height: 70px;
-    background: rgba(90, 90, 90, 0.1);
+    width: 100px;
+    height: 100px;
+    background: rgba(90, 90, 90, 0);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
