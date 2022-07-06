@@ -1,20 +1,25 @@
 import styled from "@emotion/styled";
 
-export const Container = styled.div`
+export const OuterContainer = styled.div`
+    text-align: center;
     display: flex;
-    align-content: center;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center; /* align items vertically, in this case */
+
+    align-items: center; /* align items horizontally, in this case */
+`;
+
+export const Container = styled.div`
     border-radius: 8px;
     border: 1px solid rgba(90, 90, 190, 0.25);
-    width: 60vw;
-    z-index: 999;
+    background-color: black;
 `;
 
 export const GameContainer = styled.div`
     display: flex;
     align-content: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    width: 100%;
 `;
 
 export const MContainer = styled.div`
