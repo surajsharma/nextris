@@ -39,18 +39,17 @@ let gameOver: boolean = false;
 let cur: any = null;
 let nextCur: any = null;
 
-var then: number = 0;
-var delta: number = 0;
+let then: number = 0;
+let deltaTime: number = 0;
 
 const Home: NextPage = () => {
     const requestRef = useRef<any>();
     const previousTimeRef = useRef<any>();
     const selectris = useRef<any>();
-
     const [drawEmpty, setDrawEmpty] = useState(false);
     const [score, setScore] = useState(0);
 
-    var interval = useRef(100 - score);
+    let interval = useRef(100 - score);
 
     const [m, setM] = useState(
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
@@ -235,10 +234,10 @@ const Home: NextPage = () => {
             then = now;
         }
 
-        delta = now - then;
+        deltaTime = now - then;
 
-        if (delta > interval.current) {
-            then = now - (delta % interval.current);
+        if (deltaTime > interval.current) {
+            then = now - (deltaTime % interval.current);
 
             if (!gameOver) {
                 if (!pause) {
@@ -257,6 +256,7 @@ const Home: NextPage = () => {
     };
 
     const outOfBounds = () => {
+        // TODO:will piece go out of bounds?
         let out = 0;
         for (let i = 0; i < COLS; i++) {
             for (let j = 0; j < ROWS; j++) {
@@ -270,6 +270,7 @@ const Home: NextPage = () => {
         }
         return null;
     };
+
     const handleKeyboard = (event: any) => {
         // console.log(event.key);
 
@@ -310,12 +311,15 @@ const Home: NextPage = () => {
     const swipeRight = () => {
         moveRight(m, cur, updateMatrix);
     };
+
     const swipeUp = () => {
         rotate(m, cur, updateMatrix);
     };
+
     const swipeDown = () => {
         moveDown(m, cur, updateMatrix);
     };
+
     const swipe = useSwipe({
         left: swipeRight,
         right: swipeLeft,
@@ -349,25 +353,31 @@ const Home: NextPage = () => {
                         <button
                             onClick={() => {
                                 console.log(cur, nextCur);
+                                pause = !pause;
                             }}
                         >
-                            SCORE:{score}
+                            SCORE:{score * 10}
                         </button>
                     </Flex>
                     <GameContainer>
                         <Matrix matrix={m} drawEmpty={drawEmpty} />
                         <SideBar>
-                            <NextPiece nextCur={nextCur} />
                             <Level>
                                 <h2>📶 {score}</h2>
+                                stage
                             </Level>
+                            <NextPiece
+                                nextCur={nextCur}
+                                paused={pause}
+                                gameOver={gameOver}
+                            />
                             <Score>
                                 <h2>🧮 {score * 10}</h2>
+                                score
                             </Score>
                         </SideBar>
                     </GameContainer>
                 </Container>
-
                 <FC>
                     <h1>
                         <i>

@@ -31,6 +31,7 @@ export const SideBar = styled.div`
     @media only screen and (max-width: 428px) {
         flex-direction: row;
         height: 130px;
+        width: 100%;
         /* Created with https://www.css-gradient.com */
         background: #01246c;
         background: -webkit-linear-gradient(bottom, #01246c, #000000);
@@ -46,13 +47,12 @@ export const FC = styled.div`
 `;
 
 export const NextContainer = styled.div`
-    width: 85px;
-
     @media only screen and (max-width: 428px) {
-        width: 100px;
+        margin-top: 30px;
+        line-height: 0.5;
     }
 
-    height: 100px;
+    width: 70px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -60,11 +60,9 @@ export const NextContainer = styled.div`
     align-items: center;
     align-content: center;
     justify-content: center;
-    margin-top: 15px;
 `;
 
 export const Level = styled.div`
-    width: 100px;
     height: 100px;
     display: flex;
     flex-direction: column;
@@ -73,13 +71,14 @@ export const Level = styled.div`
     align-content: center;
     flex-direction: column;
     text-align: center;
+    line-height: 1.4;
+    margin: 15px;
     @media only screen and (max-width: 428px) {
         margin-top: 40px;
     }
 `;
 
 export const Score = styled.div`
-    width: 100px;
     height: 100px;
     display: flex;
     flex-direction: column;
@@ -88,6 +87,8 @@ export const Score = styled.div`
     align-content: center;
     flex-direction: column;
     text-align: center;
+    line-height: 1.4;
+    margin: 15px;
     @media only screen and (max-width: 428px) {
         margin-top: 40px;
     }

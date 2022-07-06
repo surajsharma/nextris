@@ -2,9 +2,14 @@ import React from "react";
 import { I, J, L, O, S, T, Z } from "../Constants/pieces";
 import { NextContainer } from "./Flex";
 
-import { CheckBox, HiddenCheckBox } from "./Checkbox";
+import {
+    CheckBox,
+    HiddenCheckBox,
+    HiddenNextCheckBox,
+    NextCheckBox
+} from "./Checkbox";
 
-export function NextPiece({ nextCur }: any) {
+export function NextPiece({ nextCur, paused, gameOver }: any) {
     const pieceMap: any = {
         T: T(nextCur?.posX, nextCur?.posY, nextCur?.rot),
         O: O(nextCur?.posX, nextCur?.posY, nextCur?.rot),
@@ -35,6 +40,7 @@ export function NextPiece({ nextCur }: any) {
         [7, 2],
         [8, 2]
     ];
+    console.log(paused, gameOver);
 
     return (
         <NextContainer>
@@ -43,20 +49,27 @@ export function NextPiece({ nextCur }: any) {
                     // console.log(p, piece[index]);
                     if (JSON.stringify(piece).includes(JSON.stringify(p))) {
                         return (
-                            <CheckBox
+                            <NextCheckBox
+                                type="checkbox"
                                 key={index}
-                                i1={p[0]}
-                                i2={p[1]}
-                                c={true}
-                                clickHandler={() => {
-                                    console.log(p == piece[0], p, piece[0]);
+                                checked={false}
+                                onChange={() => {
+                                    console.log(p);
                                 }}
                             />
                         );
                     } else {
-                        return <HiddenCheckBox type="checkbox" key={index} />;
+                        return (
+                            <HiddenNextCheckBox
+                                type="checkbox"
+                                key={index}
+                            ></HiddenNextCheckBox>
+                        );
                     }
                 })}
+            {nextCur && !paused && !gameOver ? "next" : <h3>game over!</h3>}
+            {paused ? "paused" : null}
+            {gameOver ? "gameOver" : null}
         </NextContainer>
     );
 }
