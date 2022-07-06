@@ -6,6 +6,7 @@ import {
     collisionT,
     COLS,
     createAndFillTwoDArray,
+    FPS,
     getNextCur,
     ROWS
 } from "../Constants/utils";
@@ -40,6 +41,9 @@ let gameOver: boolean = false;
 let cur: any = null;
 let nextCur: any = null;
 
+var then: any = undefined;
+var delta;
+
 const Home: NextPage = () => {
     const requestRef = useRef<any>();
     const previousTimeRef = useRef<any>();
@@ -47,6 +51,9 @@ const Home: NextPage = () => {
     const [drawEmpty, setDrawEmpty] = useState(false);
 
     const [score, setScore] = useState(0);
+
+    var interval = useRef(100 - score);
+
     const [m, setM] = useState(
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
     );
@@ -235,24 +242,15 @@ const Home: NextPage = () => {
         // return piecePipeLine();
     };
 
-    var fps = score ? 1 + score * 0.01 : 1;
-    var then: any = undefined;
-    var interval = 1000 - fps;
-    var delta;
     const gameLoop = (now: any) => {
-        //TODO: optimise this https://gist.github.com/elundmark/38d3596a883521cb24f5
-        // timer = window.setTimeout(() => {
-
         if (!then) {
             then = now;
         }
-        requestAnimationFrame(gameLoop);
+
         delta = now - then;
 
-        if (delta > interval) {
-            then = now - (delta % interval);
-
-            // ... Code for Drawing the Frame ...
+        if (delta > interval.current) {
+            then = now - (delta % interval.current);
             if (previousTimeRef.current != undefined) {
                 if (!gameOver) {
                     if (!pause) {
@@ -264,12 +262,9 @@ const Home: NextPage = () => {
                 }
             }
             previousTimeRef.current = now;
-            requestRef.current = requestAnimationFrame(gameLoop);
-
-            console.log("timer", interval, fps);
+            console.log("timer", interval.current, FPS);
         }
-
-        // }, 1000 / FPS);
+        requestRef.current = requestAnimationFrame(gameLoop);
     };
 
     const handleKeyboard = (event: any) => {
@@ -309,9 +304,7 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         console.log("score!");
-        if (score != 0) {
-            gameLoop(previousTimeRef.current);
-        }
+        interval.current = 500 - score;
     }, [score]);
 
     return (
