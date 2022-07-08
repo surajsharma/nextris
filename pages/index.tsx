@@ -209,7 +209,9 @@ const Home: NextPage = () => {
 
     const piecePipeLine = () => {
         // sets current and next pieces
-
+        if (isGameOver()) {
+            return gameIsOver();
+        }
         cur = nextCur;
         nextCur = getNextCur();
         return;
@@ -248,6 +250,7 @@ const Home: NextPage = () => {
     };
 
     const gameIsOver = () => {
+        rerender(!r);
         gameOver = true;
         cur = null;
         nextCur = null;
@@ -267,11 +270,14 @@ const Home: NextPage = () => {
 
     const handleKeyboard = (event: any) => {
         if (gameOver) {
-            rerender(!r);
+            if (confirm("Game Over, start again?")) {
+                newGame();
+            }
             return;
         }
         if (pause) {
             pause = !pause;
+            rerender(r);
         }
 
         if (event.key === "`") {
@@ -374,7 +380,9 @@ const Home: NextPage = () => {
     }, [score]);
 
     useEffect(() => {
-        console.log("will rerender");
+        if (gameOver) {
+            console.log("game over");
+        }
     }, [r]);
 
     return (
@@ -383,6 +391,7 @@ const Home: NextPage = () => {
             className="App"
             onKeyDown={handleKeyboard}
             tabIndex={-1}
+            style={{ display: "flex", flexDirection: "column" }}
         >
             <OuterContainer>
                 <Container>
@@ -401,7 +410,9 @@ const Home: NextPage = () => {
                         <SideBar>
                             <SidebarItems FF={Firefox}>
                                 <LevelOrScore>
-                                    <h2>📶 {score}</h2>
+                                    <h2>
+                                        📶 <i>{score}</i>
+                                    </h2>
                                     stage
                                 </LevelOrScore>
                                 <NextPiece
@@ -410,7 +421,9 @@ const Home: NextPage = () => {
                                     gameOver={gameOver}
                                 />
                                 <LevelOrScore>
-                                    <h2>🧮 {score * 10}</h2>
+                                    <h2>
+                                        🧮 <i>{score * 10}</i>
+                                    </h2>
                                     score
                                 </LevelOrScore>
                             </SidebarItems>

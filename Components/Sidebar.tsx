@@ -10,36 +10,29 @@ export const SidebarItems = styled.div<SideBarProps>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-
+    justify-content: space-around;
     width: 100%;
     height: 100%;
-
     line-height: 0;
-
     @media only screen and (max-width: 428px) {
         flex-direction: row;
         height: 0%;
-        margin-top: -10px;
     }
 `;
 
 export const SideBar = styled.div`
+    width: 100px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     flex-direction: column;
     color: orange;
-
     font-family: sans-serif;
-    background-color: #001;
-
     @media only screen and (max-width: 428px) {
         flex-direction: row;
-        height: 130px;
+        height: 100px;
         width: 100%;
-        /* Created with https://www.css-gradient.com */
-        background: #01246c;
+        background: #000;
         background: -webkit-linear-gradient(bottom, #01246c, #000000);
         background: -moz-linear-gradient(bottom, #01246c, #000000);
         background: linear-gradient(to top, #01246c, #000000);
@@ -48,7 +41,7 @@ export const SideBar = styled.div`
 
 export const NextContainer = styled.div<SideBarProps>`
     @media only screen and (max-width: 428px) {
-        margin-top: 35px;
+        margin-top: -20px;
         ${({ FF }) =>
             FF &&
             `margin-top:15px !important;
@@ -56,6 +49,7 @@ export const NextContainer = styled.div<SideBarProps>`
     }
 
     width: 70px;
+    height: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -69,10 +63,16 @@ export const LevelOrScore = styled.div`
     flex-direction: column;
     align-items: center;
     align-content: center;
+    justify-content: center;
     text-align: center;
     margin: 15px;
+    color: darkgoldenrod;
+
+    width: 100%;
+    height: 100%;
     @media only screen and (max-width: 428px) {
-        line-height: 0.5;
+        line-height: 0;
         height: 0%;
+        width: 100%;
     }
 `;

@@ -77,8 +77,10 @@ export function NextPiece({ nextCur, paused, gameOver, FF }: any) {
                 {nextCur && "next"}
                 {gameOver && (
                     <FC>
-                        <h3>GAME</h3>
-                        <h3>OVER!</h3>
+                        <i>
+                            <h3>GAME</h3>
+                            <h3>OVER!</h3>
+                        </i>
                     </FC>
                 )}
             </div>

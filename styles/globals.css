@@ -35,6 +35,10 @@ h1 {
     font-family: sans-serif;
 }
 
+h2 {
+    font-size: 1.2em;
+}
+
 h3 {
     color: palegreen;
     font-size: 1em;
