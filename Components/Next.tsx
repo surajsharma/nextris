@@ -5,7 +5,7 @@ import { NextContainer } from "./Sidebar";
 import { HiddenNextCheckBox, NextCheckBox } from "./Checkbox";
 import { FC } from "./Flex";
 
-export function NextPiece({ nextCur, paused, gameOver }: any) {
+export function NextPiece({ nextCur, paused, gameOver, FF }: any) {
     const pieceMap: any = {
         T: T(nextCur?.posX, nextCur?.posY, nextCur?.rot),
         O: O(nextCur?.posX, nextCur?.posY, nextCur?.rot),
@@ -73,9 +73,7 @@ export function NextPiece({ nextCur, paused, gameOver }: any) {
                         }
                     })}
             </NextContainer>
-            {nextCur && !paused && !gameOver ? "next" : <h3>game over!</h3>}
-            {paused ? "paused" : null}
-            {gameOver ? "gameOver" : null}
+            <p style={{ marginTop: "0px" }}>{nextCur && "next"}</p>
         </FC>
     );
 }

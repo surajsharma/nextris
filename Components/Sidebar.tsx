@@ -1,11 +1,27 @@
 import styled from "@emotion/styled";
 
-export const SidebarItems = styled.div`
+interface SideBarProps {
+    FF: boolean;
+}
+
+export const SidebarItems = styled.div<SideBarProps>`
     ${({ FF }) => FF && `margin-top:30px;`}
+
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
+
     width: 100%;
+    height: 100%;
+
+    line-height: 0;
+
+    @media only screen and (max-width: 428px) {
+        flex-direction: row;
+        height: 0%;
+        margin-top: -10px;
+    }
 `;
 
 export const SideBar = styled.div`
@@ -30,13 +46,12 @@ export const SideBar = styled.div`
     }
 `;
 
-export const NextContainer = styled.div`
+export const NextContainer = styled.div<SideBarProps>`
     @media only screen and (max-width: 428px) {
-        margin-top: 30px;
-
+        margin-top: 65px !important;
         ${({ FF }) =>
             FF &&
-            `margin-top:0;
+            `margin-top:40px !important;
             -moz-transform: scale(90%);`}
     }
 
@@ -49,34 +64,15 @@ export const NextContainer = styled.div`
     justify-content: center;
 `;
 
-export const Level = styled.div`
-    height: 100px;
+export const LevelOrScore = styled.div`
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
     align-items: center;
     align-content: center;
-    flex-direction: column;
     text-align: center;
-    line-height: 1.4;
     margin: 15px;
     @media only screen and (max-width: 428px) {
-        margin-top: 40px;
-    }
-`;
-
-export const Score = styled.div`
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    border-radius: 8px;
-    align-items: center;
-    align-content: center;
-    flex-direction: column;
-    text-align: center;
-    line-height: 1.4;
-    margin: 15px;
-    @media only screen and (max-width: 428px) {
-        margin-top: 40px;
+        line-height: 0.5;
+        height: 0%;
     }
 `;

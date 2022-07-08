@@ -21,19 +21,18 @@ import {
     Container,
     FC,
     Flex,
-    Level,
+    GameContainer,
     Link,
     Matrix,
     NextPiece,
-    Score,
-    GameContainer,
     OuterContainer,
-    SideBar
+    SideBar,
+    LevelOrScore,
+    SidebarItems
 } from "../Components";
 
 // Interfaces and Types
 import { moveDown, moveLeft, moveRight, rotate } from "../Constants/moves";
-import { SidebarItems } from "../Components/Sidebar";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -51,7 +50,7 @@ const Home: NextPage = () => {
     const [drawEmpty, setDrawEmpty] = useState(false);
     const [score, setScore] = useState(0);
 
-    const [nav, setNav] = useState<any>(null);
+    const [Firefox, setFirefox] = useState<boolean>(false);
 
     let interval = useRef(100 - score);
 
@@ -334,7 +333,9 @@ const Home: NextPage = () => {
     useEffect(() => {
         console.log("render/begin");
         if (navigator) {
-            setNav(navigator);
+            setFirefox(
+                navigator?.userAgent.toLowerCase().indexOf("firefox") > -1
+            );
         }
 
         nextCur = getNextCur();
@@ -370,26 +371,20 @@ const Home: NextPage = () => {
                     <GameContainer>
                         <Matrix matrix={m} drawEmpty={drawEmpty} />
                         <SideBar>
-                            <SidebarItems
-                                FF={
-                                    nav?.userAgent
-                                        .toLowerCase()
-                                        .indexOf("firefox") > -1
-                                }
-                            >
-                                <Level>
+                            <SidebarItems FF={Firefox}>
+                                <LevelOrScore>
                                     <h2>📶 {score}</h2>
                                     stage
-                                </Level>
+                                </LevelOrScore>
                                 <NextPiece
                                     nextCur={nextCur}
                                     paused={pause}
                                     gameOver={gameOver}
                                 />
-                                <Score>
+                                <LevelOrScore>
                                     <h2>🧮 {score * 10}</h2>
                                     score
-                                </Score>
+                                </LevelOrScore>
                             </SidebarItems>
                         </SideBar>
                     </GameContainer>
