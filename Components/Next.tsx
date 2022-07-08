@@ -1,13 +1,9 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { I, J, L, O, S, T, Z } from "../Constants/pieces";
-import { NextContainer } from "./Flex";
+import { NextContainer } from "./Sidebar";
 
-import {
-    CheckBox,
-    HiddenCheckBox,
-    HiddenNextCheckBox,
-    NextCheckBox
-} from "./Checkbox";
+import { HiddenNextCheckBox, NextCheckBox } from "./Checkbox";
+import { FC } from "./Flex";
 
 export function NextPiece({ nextCur, paused, gameOver }: any) {
     const pieceMap: any = {
@@ -40,36 +36,46 @@ export function NextPiece({ nextCur, paused, gameOver }: any) {
         [7, 2],
         [8, 2]
     ];
-    console.log(paused, gameOver);
+    const [nav, setNav] = useState<any>(null);
+
+    useEffect(() => {
+        if (navigator) {
+            setNav(navigator);
+        }
+    }, []);
 
     return (
-        <NextContainer>
-            {piece &&
-                nm?.map((p: any, index: number) => {
-                    // console.log(p, piece[index]);
-                    if (JSON.stringify(piece).includes(JSON.stringify(p))) {
-                        return (
-                            <NextCheckBox
-                                type="checkbox"
-                                key={index}
-                                checked={false}
-                                onChange={() => {
-                                    console.log(p);
-                                }}
-                            />
-                        );
-                    } else {
-                        return (
-                            <HiddenNextCheckBox
-                                type="checkbox"
-                                key={index}
-                            ></HiddenNextCheckBox>
-                        );
-                    }
-                })}
+        <FC>
+            <NextContainer
+                FF={nav?.userAgent.toLowerCase().indexOf("firefox") > -1}
+            >
+                {piece &&
+                    nm?.map((p: any, index: number) => {
+                        // console.log(p, piece[index]);
+                        if (JSON.stringify(piece).includes(JSON.stringify(p))) {
+                            return (
+                                <NextCheckBox
+                                    type="checkbox"
+                                    key={index}
+                                    checked={false}
+                                    onChange={() => {
+                                        console.log(p);
+                                    }}
+                                />
+                            );
+                        } else {
+                            return (
+                                <HiddenNextCheckBox
+                                    type="checkbox"
+                                    key={index}
+                                ></HiddenNextCheckBox>
+                            );
+                        }
+                    })}
+            </NextContainer>
             {nextCur && !paused && !gameOver ? "next" : <h3>game over!</h3>}
             {paused ? "paused" : null}
             {gameOver ? "gameOver" : null}
-        </NextContainer>
+        </FC>
     );
 }

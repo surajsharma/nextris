@@ -25,13 +25,15 @@ import {
     Link,
     Matrix,
     NextPiece,
-    Score
+    Score,
+    GameContainer,
+    OuterContainer,
+    SideBar
 } from "../Components";
 
 // Interfaces and Types
-import { GameContainer, OuterContainer } from "../Components/Container";
-import { SideBar } from "../Components/Flex";
 import { moveDown, moveLeft, moveRight, rotate } from "../Constants/moves";
+import { SidebarItems } from "../Components/Sidebar";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -48,6 +50,8 @@ const Home: NextPage = () => {
     const selectris = useRef<any>();
     const [drawEmpty, setDrawEmpty] = useState(false);
     const [score, setScore] = useState(0);
+
+    const [nav, setNav] = useState<any>(null);
 
     let interval = useRef(100 - score);
 
@@ -329,6 +333,10 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         console.log("render/begin");
+        if (navigator) {
+            setNav(navigator);
+        }
+
         nextCur = getNextCur();
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
@@ -362,19 +370,27 @@ const Home: NextPage = () => {
                     <GameContainer>
                         <Matrix matrix={m} drawEmpty={drawEmpty} />
                         <SideBar>
-                            <Level>
-                                <h2>📶 {score}</h2>
-                                stage
-                            </Level>
-                            <NextPiece
-                                nextCur={nextCur}
-                                paused={pause}
-                                gameOver={gameOver}
-                            />
-                            <Score>
-                                <h2>🧮 {score * 10}</h2>
-                                score
-                            </Score>
+                            <SidebarItems
+                                FF={
+                                    nav?.userAgent
+                                        .toLowerCase()
+                                        .indexOf("firefox") > -1
+                                }
+                            >
+                                <Level>
+                                    <h2>📶 {score}</h2>
+                                    stage
+                                </Level>
+                                <NextPiece
+                                    nextCur={nextCur}
+                                    paused={pause}
+                                    gameOver={gameOver}
+                                />
+                                <Score>
+                                    <h2>🧮 {score * 10}</h2>
+                                    score
+                                </Score>
+                            </SidebarItems>
                         </SideBar>
                     </GameContainer>
                 </Container>
