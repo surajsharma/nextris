@@ -150,22 +150,22 @@ const Home: NextPage = () => {
     const updateCurPiece = () => {
         // updates the position of current piece
 
-        if (pause || gameOver || !m.length || collisionT(m)) return;
+        if (pause || !m.length || collisionT(m)) return;
 
         if (!cur) piecePipeLine();
 
-        if (collisionB(m)) {
-            setFixedPieces();
-            piecePipeLine();
-            return;
-        } else {
-            if (!gameOver) {
-                moveDown(m, cur, updateMatrix);
+        if (!isGameOver()) {
+            if (collisionB(m)) {
+                setFixedPieces();
+                piecePipeLine();
+                return;
             } else {
-                gameIsOver();
+                moveDown(m, cur, updateMatrix);
             }
-            return;
+        } else {
+            gameIsOver();
         }
+        return;
     };
 
     const updateMatrix = () => {
@@ -251,7 +251,7 @@ const Home: NextPage = () => {
         gameOver = true;
         cur = null;
         nextCur = null;
-        rerender(!r);
+        return rerender(!r);
     };
 
     const outOfBounds = () => {
@@ -266,7 +266,13 @@ const Home: NextPage = () => {
     };
 
     const handleKeyboard = (event: any) => {
-        if (pause || gameOver) return;
+        if (gameOver) {
+            rerender(!r);
+            return;
+        }
+        if (pause) {
+            pause = !pause;
+        }
 
         if (event.key === "`") {
             console.clear();
@@ -368,7 +374,7 @@ const Home: NextPage = () => {
     }, [score]);
 
     useEffect(() => {
-        console.log("pogo");
+        console.log("will rerender");
     }, [r]);
 
     return (
@@ -381,13 +387,13 @@ const Home: NextPage = () => {
             <OuterContainer>
                 <Container>
                     <Flex>
-                        <button onClick={newGame}>New Game</button>
+                        <button onClick={newGame}>⭐️ New Game</button>
                         <button
                             onClick={() => {
                                 pause = !pause;
                             }}
                         >
-                            SCORE:{score * 10}
+                            SCORE:{score * 10} ⏸
                         </button>
                     </Flex>
                     <GameContainer>
