@@ -73,7 +73,15 @@ export function NextPiece({ nextCur, paused, gameOver, FF }: any) {
                     })}
             </NextContainer>
 
-            <p style={{ marginTop: "10px" }}>{nextCur && "next"}</p>
+            <div style={{ marginTop: "0px", color: "gray" }}>
+                {nextCur && "next"}
+                {gameOver && (
+                    <FC>
+                        <h3>GAME</h3>
+                        <h3>OVER!</h3>
+                    </FC>
+                )}
+            </div>
         </FC>
     );
 }

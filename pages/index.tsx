@@ -59,12 +59,12 @@ const Home: NextPage = () => {
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
     );
 
+    const isGameOver = () => {
+        return m[0].filter((cell: string | number) => cell === 1).length;
+    };
+
     const resetMatrix = () => {
         // resets the matrix for a new game, sets new current/next pieces
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 72 ~ resetMatrix ~ resetMatrix",
-        // resetMatrix
-        // );
         const newM = m;
 
         if (!newM) return;
@@ -82,10 +82,7 @@ const Home: NextPage = () => {
     };
 
     const clearSetLines = () => {
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 105 ~ clearSetLines ~ clearSetLines",
-        // clearSetLines
-        // );
+        //remove set lines from the matrix
 
         let rowsToClear: any = [];
 
@@ -134,10 +131,6 @@ const Home: NextPage = () => {
 
     const setFixedPieces = () => {
         // updates matrix to reprsenty settled pieces
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 124 ~ setFixedPieces ~ setFixedPieces",
-        // setFixedPieces
-        // );
 
         const newM = m;
 
@@ -152,38 +145,33 @@ const Home: NextPage = () => {
         }
 
         setM([...newM]);
-        // console.log("setFixedPieces", m);
     };
 
     const updateCurPiece = () => {
         // updates the position of current piece
 
-        if (gameOver || !m.length || collisionT(m)) return;
+        if (pause || gameOver || !m.length || collisionT(m)) return;
 
         if (!cur) piecePipeLine();
 
         if (collisionB(m)) {
-            // console.log("collided, getting new pieces", m);
             setFixedPieces();
             piecePipeLine();
             return;
         } else {
-            // console.log("moving down", m);
-            moveDown(m, cur, updateMatrix);
+            if (!gameOver) {
+                moveDown(m, cur, updateMatrix);
+            } else {
+                gameIsOver();
+            }
             return;
         }
     };
 
     const updateMatrix = () => {
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 186 ~ updateMatrix ~ updateMatrix",
-        // updateMatrix
-        // );
         //inserts current piece @ location
 
         if (gameOver || !cur || !m.length) return;
-
-        // // console.log("update matrix", m);
 
         let newM: any = m;
 
@@ -217,11 +205,11 @@ const Home: NextPage = () => {
         }
 
         setM([...newM]);
-        // // // // console.log("🚀 updateMatrix ~ newM", newM);
     };
 
     const piecePipeLine = () => {
         // sets current and next pieces
+
         cur = nextCur;
         nextCur = getNextCur();
         return;
@@ -230,6 +218,7 @@ const Home: NextPage = () => {
     const newGame = () => {
         console.clear();
         pause = false;
+        gameOver = false;
         setScore(0);
         return resetMatrix();
     };
@@ -244,20 +233,25 @@ const Home: NextPage = () => {
         if (deltaTime > interval.current) {
             then = now - (deltaTime % interval.current);
 
-            if (!gameOver) {
+            if (!isGameOver()) {
                 if (!pause) {
                     updateCurPiece();
                     clearSetLines();
                     selectris.current.focus();
-                } else {
-                    // console.log("game paused");
                 }
+            } else {
+                gameIsOver();
             }
-
             previousTimeRef.current = now;
-            // console.log("timer", interval.current - score * 10);
         }
         requestRef.current = requestAnimationFrame(gameLoop);
+    };
+
+    const gameIsOver = () => {
+        gameOver = true;
+        cur = null;
+        nextCur = null;
+        rerender(!r);
     };
 
     const outOfBounds = () => {
@@ -272,6 +266,8 @@ const Home: NextPage = () => {
     };
 
     const handleKeyboard = (event: any) => {
+        if (pause || gameOver) return;
+
         if (event.key === "`") {
             console.clear();
         }
@@ -328,18 +324,22 @@ const Home: NextPage = () => {
 
     // Gestures for Mobile
     const swipeLeft = () => {
+        if (pause || gameOver) return;
         moveLeft(m, cur, updateMatrix);
     };
 
     const swipeRight = () => {
+        if (pause || gameOver) return;
         moveRight(m, cur, updateMatrix);
     };
 
     const swipeUp = () => {
+        if (pause || gameOver) return;
         rotate(m, cur, updateMatrix);
     };
 
     const swipeDown = () => {
+        if (pause || gameOver) return;
         moveDown(m, cur, updateMatrix);
     };
 
@@ -364,9 +364,12 @@ const Home: NextPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log("score!");
         interval.current = 500 - score * 10;
     }, [score]);
+
+    useEffect(() => {
+        console.log("pogo");
+    }, [r]);
 
     return (
         <div
@@ -381,7 +384,6 @@ const Home: NextPage = () => {
                         <button onClick={newGame}>New Game</button>
                         <button
                             onClick={() => {
-                                // console.log(cur, nextCur);
                                 pause = !pause;
                             }}
                         >

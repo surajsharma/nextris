@@ -48,12 +48,11 @@ export const SideBar = styled.div`
 
 export const NextContainer = styled.div<SideBarProps>`
     @media only screen and (max-width: 428px) {
+        margin-top: 35px;
         ${({ FF }) =>
             FF &&
-            `margin-top:20px !important;
+            `margin-top:15px !important;
             -moz-transform: scale(90%);`}
-
-        margin-top:45px;
     }
 
     width: 70px;

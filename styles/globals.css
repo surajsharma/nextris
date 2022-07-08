@@ -35,6 +35,13 @@ h1 {
     font-family: sans-serif;
 }
 
+h3 {
+    color: palegreen;
+    font-size: 1em;
+    line-height: 0;
+    font-family: sans-serif;
+}
+
 sup {
     font-size: 0.3em;
     color: lightgreen;
@@ -43,7 +50,7 @@ sup {
 button {
     background-color: transparent;
     border: 0;
-    color: #222;
+    color: #070;
     font-size: 0.7em;
     font-weight: 0;
 }

@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 
 export const OuterContainer = styled.div`
+    margin-top: -25px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -14,7 +15,7 @@ export const OuterContainer = styled.div`
 export const Container = styled.div`
     border-radius: 8px;
     border: 1px solid rgba(90, 90, 190, 0.2);
-    background-color: black;
+    background-color: black; ;
 `;
 
 export const GameContainer = styled.div`
