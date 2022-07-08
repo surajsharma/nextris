@@ -9,12 +9,15 @@ export const OuterContainer = styled.div`
     @media only screen and (max-width: 316px) {
         display: none;
     }
+    @media only screen and (max-width: 428px) {
+        margin-top: -20px;
+    }
 `;
 
 export const Container = styled.div`
     border-radius: 8px;
     border: 1px solid rgba(90, 90, 190, 0.2);
-    background-color: black;
+    background-color: black; ;
 `;
 
 export const GameContainer = styled.div`

@@ -22,4 +22,7 @@ export const FC = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    @media only screen and (max-width: 428px) {
+        row-gap: 10px;
+    }
 `;

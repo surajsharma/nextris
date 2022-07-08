@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { I, J, L, O, S, T, Z } from "../Constants/pieces";
-import { NextContainer } from "./Sidebar";
+import { NextContainer, NextText } from "./Sidebar";
 
 import { HiddenNextCheckBox, NextCheckBox } from "./Checkbox";
 import { FC } from "./Flex";
 
-export function NextPiece({ nextCur, paused, gameOver }: any) {
+export function NextPiece({ nextCur, paused, gameOver, FF }: any) {
     const pieceMap: any = {
         T: T(nextCur?.posX, nextCur?.posY, nextCur?.rot),
         O: O(nextCur?.posX, nextCur?.posY, nextCur?.rot),
@@ -51,7 +51,6 @@ export function NextPiece({ nextCur, paused, gameOver }: any) {
             >
                 {piece &&
                     nm?.map((p: any, index: number) => {
-                        // console.log(p, piece[index]);
                         if (JSON.stringify(piece).includes(JSON.stringify(p))) {
                             return (
                                 <NextCheckBox
@@ -73,9 +72,22 @@ export function NextPiece({ nextCur, paused, gameOver }: any) {
                         }
                     })}
             </NextContainer>
-            {nextCur && !paused && !gameOver ? "next" : <h3>game over!</h3>}
-            {paused ? "paused" : null}
-            {gameOver ? "gameOver" : null}
+
+            <div>
+                <NextText
+                    FF={nav?.userAgent.toLowerCase().indexOf("firefox") > -1}
+                >
+                    {nextCur && "next"}{" "}
+                    {gameOver && (
+                        <FC>
+                            <i>
+                                <h3>GAME</h3>
+                                <h3>OVER!</h3>
+                            </i>
+                        </FC>
+                    )}
+                </NextText>
+            </div>
         </FC>
     );
 }

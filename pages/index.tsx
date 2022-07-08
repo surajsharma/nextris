@@ -21,19 +21,18 @@ import {
     Container,
     FC,
     Flex,
-    Level,
+    GameContainer,
+    LevelOrScore,
     Link,
     Matrix,
     NextPiece,
-    Score,
-    GameContainer,
     OuterContainer,
-    SideBar
+    SideBar,
+    SidebarItems
 } from "../Components";
 
 // Interfaces and Types
 import { moveDown, moveLeft, moveRight, rotate } from "../Constants/moves";
-import { SidebarItems } from "../Components/Sidebar";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -49,9 +48,10 @@ const Home: NextPage = () => {
     const previousTimeRef = useRef<any>();
     const selectris = useRef<any>();
     const [drawEmpty, setDrawEmpty] = useState(false);
+    const [r, rerender] = useState(false);
     const [score, setScore] = useState(0);
 
-    const [nav, setNav] = useState<any>(null);
+    const [Firefox, setFirefox] = useState<boolean>(false);
 
     let interval = useRef(100 - score);
 
@@ -59,12 +59,12 @@ const Home: NextPage = () => {
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
     );
 
+    const isGameOver = () => {
+        return m[0].filter((cell: string | number) => cell === 1).length;
+    };
+
     const resetMatrix = () => {
         // resets the matrix for a new game, sets new current/next pieces
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 72 ~ resetMatrix ~ resetMatrix",
-        // resetMatrix
-        // );
         const newM = m;
 
         if (!newM) return;
@@ -82,10 +82,7 @@ const Home: NextPage = () => {
     };
 
     const clearSetLines = () => {
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 105 ~ clearSetLines ~ clearSetLines",
-        // clearSetLines
-        // );
+        //remove set lines from the matrix
 
         let rowsToClear: any = [];
 
@@ -134,10 +131,6 @@ const Home: NextPage = () => {
 
     const setFixedPieces = () => {
         // updates matrix to reprsenty settled pieces
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 124 ~ setFixedPieces ~ setFixedPieces",
-        // setFixedPieces
-        // );
 
         const newM = m;
 
@@ -152,38 +145,33 @@ const Home: NextPage = () => {
         }
 
         setM([...newM]);
-        // console.log("setFixedPieces", m);
     };
 
     const updateCurPiece = () => {
         // updates the position of current piece
 
-        if (gameOver || !m.length || collisionT(m)) return;
+        if (pause || !m.length || collisionT(m)) return;
 
         if (!cur) piecePipeLine();
 
-        if (collisionB(m)) {
-            // console.log("collided, getting new pieces", m);
-            setFixedPieces();
-            piecePipeLine();
-            return;
+        if (!isGameOver()) {
+            if (collisionB(m)) {
+                setFixedPieces();
+                piecePipeLine();
+                return;
+            } else {
+                moveDown(m, cur, updateMatrix);
+            }
         } else {
-            console.log("moving down", m);
-            moveDown(m, cur, updateMatrix);
-            return;
+            gameIsOver();
         }
+        return;
     };
 
     const updateMatrix = () => {
-        // console.log(
-        // "🚀 ~ file: index.tsx ~ line 186 ~ updateMatrix ~ updateMatrix",
-        // updateMatrix
-        // );
         //inserts current piece @ location
 
         if (gameOver || !cur || !m.length) return;
-
-        // // console.log("update matrix", m);
 
         let newM: any = m;
 
@@ -217,11 +205,13 @@ const Home: NextPage = () => {
         }
 
         setM([...newM]);
-        // // // // console.log("🚀 updateMatrix ~ newM", newM);
     };
 
     const piecePipeLine = () => {
         // sets current and next pieces
+        if (isGameOver()) {
+            return gameIsOver();
+        }
         cur = nextCur;
         nextCur = getNextCur();
         return;
@@ -229,6 +219,8 @@ const Home: NextPage = () => {
 
     const newGame = () => {
         console.clear();
+        pause = false;
+        gameOver = false;
         setScore(0);
         return resetMatrix();
     };
@@ -243,43 +235,65 @@ const Home: NextPage = () => {
         if (deltaTime > interval.current) {
             then = now - (deltaTime % interval.current);
 
-            if (!gameOver) {
+            if (!isGameOver()) {
                 if (!pause) {
                     updateCurPiece();
                     clearSetLines();
                     selectris.current.focus();
-                } else {
-                    // console.log("game paused");
                 }
+            } else {
+                gameIsOver();
             }
-
             previousTimeRef.current = now;
-            console.log("timer", interval.current - score * 10);
         }
         requestRef.current = requestAnimationFrame(gameLoop);
     };
 
+    const gameIsOver = () => {
+        rerender(!r);
+        gameOver = true;
+        cur = null;
+        nextCur = null;
+        return rerender(!r);
+    };
+
     const outOfBounds = () => {
-        // TODO:will piece go out of bounds?
-        let out = 0;
-        for (let i = 0; i < COLS; i++) {
-            for (let j = 0; j < ROWS; j++) {
-                if (m[i][j] !== 0 && m[i][j] !== 1 && m[i][j] !== undefined) {
-                    out += 1;
-                    if (out === 3) {
-                        return j;
-                    }
-                }
+        let count = 0;
+        m.forEach((row: []) => {
+            if (row.filter((cell: any) => cell === cur.name).length) {
+                count += row.filter((cell: any) => cell === cur.name).length;
             }
-        }
-        return null;
+        });
+
+        return count === 4 ? 0 : 4 - count;
     };
 
     const handleKeyboard = (event: any) => {
-        // console.log(event.key);
-
-        if (event.key === " ") {
+        if (gameOver) {
+            if (confirm("Game Over, start again?")) {
+                newGame();
+            }
+            return;
+        }
+        if (pause) {
             pause = !pause;
+            rerender(r);
+        }
+
+        if (event.key === "`") {
+            console.clear();
+        }
+
+        if (event.key === "m") {
+            console.log(m);
+        }
+
+        if (event.key === "c") {
+            console.log(cur);
+        }
+
+        if (event.key === "n") {
+            newGame();
         }
 
         if (event.key === "ArrowLeft") {
@@ -295,32 +309,49 @@ const Home: NextPage = () => {
         }
 
         if (event.key === "ArrowUp") {
-            const out = outOfBounds();
-            if (out !== null) {
-                // alert("piece out");
-            }
             if (collisionL(m) && collisionR(m)) return;
+
             rotate(m, cur, updateMatrix);
+
+            if (cur.posX === -1 || cur.posX === 0) {
+                let steps = outOfBounds();
+                for (let move = 0; move < steps; move++) {
+                    moveRight(m, cur, updateMatrix);
+                }
+            }
+
+            if (cur.posX === COLS - 2 || cur.posX === COLS - 1) {
+                let steps = outOfBounds();
+                for (let move = 0; move < steps; move++) {
+                    moveLeft(m, cur, updateMatrix);
+                }
+            }
         }
 
-        if (event.key === "p" || event.key === "P") {
+        if (event.key === "p" || event.key === "P" || event.key === " ") {
             pause = !pause;
+            rerender(!r);
         }
     };
 
+    // Gestures for Mobile
     const swipeLeft = () => {
+        if (pause || gameOver) return;
         moveLeft(m, cur, updateMatrix);
     };
 
     const swipeRight = () => {
+        if (pause || gameOver) return;
         moveRight(m, cur, updateMatrix);
     };
 
     const swipeUp = () => {
+        if (pause || gameOver) return;
         rotate(m, cur, updateMatrix);
     };
 
     const swipeDown = () => {
+        if (pause || gameOver) return;
         moveDown(m, cur, updateMatrix);
     };
 
@@ -334,7 +365,9 @@ const Home: NextPage = () => {
     useEffect(() => {
         console.log("render/begin");
         if (navigator) {
-            setNav(navigator);
+            setFirefox(
+                navigator?.userAgent.toLowerCase().indexOf("firefox") > -1
+            );
         }
 
         nextCur = getNextCur();
@@ -343,9 +376,14 @@ const Home: NextPage = () => {
     }, []);
 
     useEffect(() => {
-        // console.log("score!");
         interval.current = 500 - score * 10;
     }, [score]);
+
+    useEffect(() => {
+        if (gameOver) {
+            console.log("game over");
+        }
+    }, [r]);
 
     return (
         <div
@@ -353,43 +391,42 @@ const Home: NextPage = () => {
             className="App"
             onKeyDown={handleKeyboard}
             tabIndex={-1}
+            style={{ display: "flex", flexDirection: "column" }}
         >
             <OuterContainer>
                 <Container>
                     <Flex>
-                        <button onClick={newGame}>New Game</button>
+                        <button onClick={newGame}>⭐️ New Game</button>
                         <button
                             onClick={() => {
-                                console.log(cur, nextCur);
                                 pause = !pause;
+                                rerender(!r);
                             }}
                         >
-                            SCORE:{score * 10}
+                            SCORE:{score * 10} ⏸
                         </button>
                     </Flex>
                     <GameContainer>
                         <Matrix matrix={m} drawEmpty={drawEmpty} />
                         <SideBar>
-                            <SidebarItems
-                                FF={
-                                    nav?.userAgent
-                                        .toLowerCase()
-                                        .indexOf("firefox") > -1
-                                }
-                            >
-                                <Level>
-                                    <h2>📶 {score}</h2>
+                            <SidebarItems FF={Firefox}>
+                                <LevelOrScore>
+                                    <h2>
+                                        📶 <i>{score}</i>
+                                    </h2>
                                     stage
-                                </Level>
+                                </LevelOrScore>
                                 <NextPiece
                                     nextCur={nextCur}
                                     paused={pause}
                                     gameOver={gameOver}
                                 />
-                                <Score>
-                                    <h2>🧮 {score * 10}</h2>
+                                <LevelOrScore>
+                                    <h2>
+                                        🧮 <i>{score * 10}</i>
+                                    </h2>
                                     score
-                                </Score>
+                                </LevelOrScore>
                             </SidebarItems>
                         </SideBar>
                     </GameContainer>
@@ -397,10 +434,20 @@ const Home: NextPage = () => {
                 <FC>
                     <h1>
                         <i>
-                            selectrix<sup>TM</sup>
+                            {pause ? (
+                                <>
+                                    <sup>⏸</sup>paused
+                                </>
+                            ) : (
+                                <>
+                                    selectrix<sup>TM</sup>
+                                </>
+                            )}
                         </i>
                         <br />
-                        <Link>ゼロイーブン</Link>
+                        <Link target="_blank" href={"https://evenzero.in"}>
+                            ゼロイーブン
+                        </Link>
                     </h1>
                 </FC>
             </OuterContainer>
