@@ -16,3 +16,14 @@ export const CheckBox = ({ i1, i2, c, clickHandler }: any) => {
 export const HiddenCheckBox = styled.input`
     opacity: 0;
 `;
+
+export const NextCheckBox = styled.input`
+    width: 10px;
+    height: 10px;
+`;
+
+export const HiddenNextCheckBox = styled.input`
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+`;

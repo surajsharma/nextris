@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 
 import {
     collisionB,
+    collisionL,
+    collisionR,
     collisionT,
     COLS,
     createAndFillTwoDArray,
@@ -19,24 +21,19 @@ import {
     Container,
     FC,
     Flex,
-    FlexR,
     Level,
     Link,
     Matrix,
     NextPiece,
-    Score
+    Score,
+    GameContainer,
+    OuterContainer,
+    SideBar
 } from "../Components";
 
 // Interfaces and Types
-import {
-    moveDown,
-    moveLeft,
-    moveRight,
-    moveUp,
-    rotate
-} from "../Constants/moves";
-import { SideBar } from "../Components/Flex";
-import { GameContainer, OuterContainer } from "../Components/Container";
+import { moveDown, moveLeft, moveRight, rotate } from "../Constants/moves";
+import { SidebarItems } from "../Components/Sidebar";
 
 let pause: boolean = false;
 let gameOver: boolean = false;
@@ -44,18 +41,19 @@ let gameOver: boolean = false;
 let cur: any = null;
 let nextCur: any = null;
 
-var then: number = 0;
-var delta: number = 0;
+let then: number = 0;
+let deltaTime: number = 0;
 
 const Home: NextPage = () => {
     const requestRef = useRef<any>();
     const previousTimeRef = useRef<any>();
     const selectris = useRef<any>();
-
     const [drawEmpty, setDrawEmpty] = useState(false);
     const [score, setScore] = useState(0);
 
-    var interval = useRef(100 - score);
+    const [nav, setNav] = useState<any>(null);
+
+    let interval = useRef(100 - score);
 
     const [m, setM] = useState(
         createAndFillTwoDArray({ rows: ROWS, cols: COLS, defaultValue: 0 })
@@ -240,10 +238,10 @@ const Home: NextPage = () => {
             then = now;
         }
 
-        delta = now - then;
+        deltaTime = now - then;
 
-        if (delta > interval.current) {
-            then = now - (delta % interval.current);
+        if (deltaTime > interval.current) {
+            then = now - (deltaTime % interval.current);
 
             if (!gameOver) {
                 if (!pause) {
@@ -259,6 +257,22 @@ const Home: NextPage = () => {
             console.log("timer", interval.current - score * 10);
         }
         requestRef.current = requestAnimationFrame(gameLoop);
+    };
+
+    const outOfBounds = () => {
+        // TODO:will piece go out of bounds?
+        let out = 0;
+        for (let i = 0; i < COLS; i++) {
+            for (let j = 0; j < ROWS; j++) {
+                if (m[i][j] !== 0 && m[i][j] !== 1 && m[i][j] !== undefined) {
+                    out += 1;
+                    if (out === 3) {
+                        return j;
+                    }
+                }
+            }
+        }
+        return null;
     };
 
     const handleKeyboard = (event: any) => {
@@ -281,6 +295,11 @@ const Home: NextPage = () => {
         }
 
         if (event.key === "ArrowUp") {
+            const out = outOfBounds();
+            if (out !== null) {
+                // alert("piece out");
+            }
+            if (collisionL(m) && collisionR(m)) return;
             rotate(m, cur, updateMatrix);
         }
 
@@ -296,12 +315,15 @@ const Home: NextPage = () => {
     const swipeRight = () => {
         moveRight(m, cur, updateMatrix);
     };
+
     const swipeUp = () => {
         rotate(m, cur, updateMatrix);
     };
+
     const swipeDown = () => {
         moveDown(m, cur, updateMatrix);
     };
+
     const swipe = useSwipe({
         left: swipeRight,
         right: swipeLeft,
@@ -311,6 +333,10 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         console.log("render/begin");
+        if (navigator) {
+            setNav(navigator);
+        }
+
         nextCur = getNextCur();
         requestRef.current = requestAnimationFrame(gameLoop);
         return () => cancelAnimationFrame(requestRef.current);
@@ -335,25 +361,39 @@ const Home: NextPage = () => {
                         <button
                             onClick={() => {
                                 console.log(cur, nextCur);
+                                pause = !pause;
                             }}
                         >
-                            SCORE:{score}
+                            SCORE:{score * 10}
                         </button>
                     </Flex>
                     <GameContainer>
                         <Matrix matrix={m} drawEmpty={drawEmpty} />
                         <SideBar>
-                            <NextPiece nextCur={nextCur} />
-                            <Level>
-                                <h2>📶 {score}</h2>
-                            </Level>
-                            <Score>
-                                <h2>🧮 {score * 10}</h2>
-                            </Score>
+                            <SidebarItems
+                                FF={
+                                    nav?.userAgent
+                                        .toLowerCase()
+                                        .indexOf("firefox") > -1
+                                }
+                            >
+                                <Level>
+                                    <h2>📶 {score}</h2>
+                                    stage
+                                </Level>
+                                <NextPiece
+                                    nextCur={nextCur}
+                                    paused={pause}
+                                    gameOver={gameOver}
+                                />
+                                <Score>
+                                    <h2>🧮 {score * 10}</h2>
+                                    score
+                                </Score>
+                            </SidebarItems>
                         </SideBar>
                     </GameContainer>
                 </Container>
-
                 <FC>
                     <h1>
                         <i>
