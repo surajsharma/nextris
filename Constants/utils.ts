@@ -2,9 +2,6 @@
 import { useEffect, useRef } from "react";
 import { Cur } from "../Constants/interfaces";
 
-
-// 280 blocks
-
 export const ROWS = 20;
 export const COLS = 15;
 export const INIT_LOC = { x: 6, y: 0 };
@@ -26,8 +23,6 @@ export function createAndFillTwoDArray({ rows, columns, defaultValue }: any) {
 }
 
 export function rotate90(matrix: any) {
-  // let t = transpose(matrix)
-  // return reverse(t)
   return matrix.map((row: any, i: any) =>
     row.map((val: any, j: any) => matrix[matrix.length - 1 - j][i])
   );

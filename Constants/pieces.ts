@@ -1,7 +1,4 @@
-//TODO: are all pieces rotating ccw?
-
 export const T = (row: number, col: number, rot: number): [any] => {
-  //ccw
   const rotationMatrix: any = {
     0: [[row, col], [row + 1, col], [row + 2, col], [row + 1, col + 1]],
     270: [[row + 1, col - 1], [row + 1, col], [row + 2, col], [row + 1, col + 1]],
