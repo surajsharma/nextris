@@ -167,7 +167,7 @@ const Home: NextPage = () => {
             piecePipeLine();
             return;
         } else {
-            console.log("moving down", m);
+            // console.log("moving down", m);
             moveDown(m, cur, updateMatrix);
             return;
         }
@@ -253,7 +253,7 @@ const Home: NextPage = () => {
             }
 
             previousTimeRef.current = now;
-            console.log("timer", interval.current - score * 10);
+            // console.log("timer", interval.current - score * 10);
         }
         requestRef.current = requestAnimationFrame(gameLoop);
     };
@@ -276,6 +276,14 @@ const Home: NextPage = () => {
 
     const handleKeyboard = (event: any) => {
         // console.log(event.key);
+
+        if (event.key === "c") {
+            console.log(cur);
+        }
+
+        if (event.key === "n") {
+            newGame();
+        }
 
         if (event.key === " ") {
             pause = !pause;
@@ -361,7 +369,7 @@ const Home: NextPage = () => {
                         <button onClick={newGame}>New Game</button>
                         <button
                             onClick={() => {
-                                console.log(cur, nextCur);
+                                // console.log(cur, nextCur);
                                 pause = !pause;
                             }}
                         >

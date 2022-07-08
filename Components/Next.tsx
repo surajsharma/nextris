@@ -51,7 +51,6 @@ export function NextPiece({ nextCur, paused, gameOver, FF }: any) {
             >
                 {piece &&
                     nm?.map((p: any, index: number) => {
-                        // console.log(p, piece[index]);
                         if (JSON.stringify(piece).includes(JSON.stringify(p))) {
                             return (
                                 <NextCheckBox
@@ -73,6 +72,7 @@ export function NextPiece({ nextCur, paused, gameOver, FF }: any) {
                         }
                     })}
             </NextContainer>
+
             <p style={{ marginTop: "0px" }}>{nextCur && "next"}</p>
         </FC>
     );
