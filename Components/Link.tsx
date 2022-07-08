@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 
 export const Link = styled.a`
-    color: gray;
+    color: white;
     font-size: 0.3em;
+    text-decoration: none;
 `;

@@ -22,12 +22,12 @@ import {
     FC,
     Flex,
     GameContainer,
+    LevelOrScore,
     Link,
     Matrix,
     NextPiece,
     OuterContainer,
     SideBar,
-    LevelOrScore,
     SidebarItems
 } from "../Components";
 
@@ -48,6 +48,7 @@ const Home: NextPage = () => {
     const previousTimeRef = useRef<any>();
     const selectris = useRef<any>();
     const [drawEmpty, setDrawEmpty] = useState(false);
+    const [r, rerender] = useState(false);
     const [score, setScore] = useState(0);
 
     const [Firefox, setFirefox] = useState<boolean>(false);
@@ -228,6 +229,7 @@ const Home: NextPage = () => {
 
     const newGame = () => {
         console.clear();
+        pause = false;
         setScore(0);
         return resetMatrix();
     };
@@ -268,6 +270,7 @@ const Home: NextPage = () => {
 
         return count === 4 ? 0 : 4 - count;
     };
+
     const handleKeyboard = (event: any) => {
         if (event.key === "`") {
             console.clear();
@@ -283,10 +286,6 @@ const Home: NextPage = () => {
 
         if (event.key === "n") {
             newGame();
-        }
-
-        if (event.key === " ") {
-            pause = !pause;
         }
 
         if (event.key === "ArrowLeft") {
@@ -321,8 +320,9 @@ const Home: NextPage = () => {
             }
         }
 
-        if (event.key === "p" || event.key === "P") {
+        if (event.key === "p" || event.key === "P" || event.key === " ") {
             pause = !pause;
+            rerender(!r);
         }
     };
 
@@ -364,7 +364,7 @@ const Home: NextPage = () => {
     }, []);
 
     useEffect(() => {
-        // console.log("score!");
+        console.log("score!");
         interval.current = 500 - score * 10;
     }, [score]);
 
@@ -412,10 +412,20 @@ const Home: NextPage = () => {
                 <FC>
                     <h1>
                         <i>
-                            selectrix<sup>TM</sup>
+                            {pause ? (
+                                <>
+                                    <sup>⏸</sup>paused
+                                </>
+                            ) : (
+                                <>
+                                    selectrix<sup>TM</sup>
+                                </>
+                            )}
                         </i>
                         <br />
-                        <Link>ゼロイーブン</Link>
+                        <Link target="_blank" href={"https://evenzero.in"}>
+                            ゼロイーブン
+                        </Link>
                     </h1>
                 </FC>
             </OuterContainer>
