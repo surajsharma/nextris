@@ -259,23 +259,23 @@ const Home: NextPage = () => {
     };
 
     const outOfBounds = () => {
-        // TODO:will piece go out of bounds?
-        let out = 0;
-        for (let i = 0; i < COLS; i++) {
-            for (let j = 0; j < ROWS; j++) {
-                if (m[i][j] !== 0 && m[i][j] !== 1 && m[i][j] !== undefined) {
-                    out += 1;
-                    if (out === 3) {
-                        return j;
-                    }
-                }
+        let count = 0;
+        m.forEach((row: []) => {
+            if (row.filter((cell: any) => cell === cur.name).length) {
+                count += row.filter((cell: any) => cell === cur.name).length;
             }
-        }
-        return null;
-    };
+        });
 
+        return count === 4 ? 0 : 4 - count;
+    };
     const handleKeyboard = (event: any) => {
-        // console.log(event.key);
+        if (event.key === "`") {
+            console.clear();
+        }
+
+        if (event.key === "m") {
+            console.log(m);
+        }
 
         if (event.key === "c") {
             console.log(cur);
@@ -302,12 +302,23 @@ const Home: NextPage = () => {
         }
 
         if (event.key === "ArrowUp") {
-            const out = outOfBounds();
-            if (out !== null) {
-                // alert("piece out");
-            }
             if (collisionL(m) && collisionR(m)) return;
+
             rotate(m, cur, updateMatrix);
+
+            if (cur.posX === -1 || cur.posX === 0) {
+                let steps = outOfBounds();
+                for (let move = 0; move < steps; move++) {
+                    moveRight(m, cur, updateMatrix);
+                }
+            }
+
+            if (cur.posX === COLS - 2 || cur.posX === COLS - 1) {
+                let steps = outOfBounds();
+                for (let move = 0; move < steps; move++) {
+                    moveLeft(m, cur, updateMatrix);
+                }
+            }
         }
 
         if (event.key === "p" || event.key === "P") {
@@ -315,6 +326,7 @@ const Home: NextPage = () => {
         }
     };
 
+    // Gestures for Mobile
     const swipeLeft = () => {
         moveLeft(m, cur, updateMatrix);
     };

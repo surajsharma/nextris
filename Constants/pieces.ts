@@ -33,10 +33,10 @@ export const J = (row: number, col: number, rot: number): [any] => {
 
 export const L = (row: number, col: number, rot: number): [any] => {
   const rotationMatrix: any = {
-    270: [[row, col], [row + 1, col], [row - 1, col], [row + 1, col - 1]],
-    180: [[row, col], [row, col - 1], [row, col + 1], [row - 1, col - 1]],
+    0: [[row, col], [row, col - 1], [row, col + 1], [row + 1, col + 1]],
     90: [[row, col], [row - 1, col], [row + 1, col], [row - 1, col + 1]],
-    0: [[row, col], [row, col - 1], [row, col + 1], [row + 1, col + 1]]
+    180: [[row, col], [row, col - 1], [row, col + 1], [row - 1, col - 1]],
+    270: [[row, col], [row + 1, col], [row - 1, col], [row + 1, col - 1]],
   }
   return rotationMatrix[rot];
 }
