@@ -13,10 +13,11 @@ export const SidebarItems = styled.div<SideBarProps>`
     justify-content: space-around;
     width: 100%;
     height: 100%;
-    line-height: 0;
+    line-height: 1;
     @media only screen and (max-width: 428px) {
         flex-direction: row;
         height: 0%;
+        margin-top: 30px;
     }
 `;
 
@@ -30,7 +31,7 @@ export const SideBar = styled.div`
     font-family: sans-serif;
     @media only screen and (max-width: 428px) {
         flex-direction: row;
-        height: 100px;
+        height: 125px;
         width: 100%;
         background: #000;
         background: -webkit-linear-gradient(bottom, #01246c, #000000);
@@ -41,10 +42,10 @@ export const SideBar = styled.div`
 
 export const NextContainer = styled.div<SideBarProps>`
     @media only screen and (max-width: 428px) {
-        margin-top: -20px;
+        margin-top: 5px;
         ${({ FF }) =>
             FF &&
-            `margin-top:15px !important;
+            `margin-top:0px !important;
             -moz-transform: scale(90%);`}
     }
 
@@ -65,14 +66,27 @@ export const LevelOrScore = styled.div`
     align-content: center;
     justify-content: center;
     text-align: center;
-    margin: 15px;
+    margin: 5px;
     color: darkgoldenrod;
-
-    width: 100%;
-    height: 100%;
+    line-height: 0.7;
+    height: 0%;
     @media only screen and (max-width: 428px) {
-        line-height: 0;
+        line-height: 2;
         height: 0%;
-        width: 100%;
+    }
+`;
+
+export const NextText = styled.div<SideBarProps>`
+color:white;
+padding:10px;
+
+    @media only screen and (max-width: 428px) {
+        margin-top: -8px;
+        ${({ FF }) =>
+            FF &&
+            `margin-top:-25px !important;
+            
+        `}
+}
     }
 `;

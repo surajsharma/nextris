@@ -400,6 +400,7 @@ const Home: NextPage = () => {
                         <button
                             onClick={() => {
                                 pause = !pause;
+                                rerender(!r);
                             }}
                         >
                             SCORE:{score * 10} ⏸

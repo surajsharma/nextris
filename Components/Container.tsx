@@ -9,6 +9,9 @@ export const OuterContainer = styled.div`
     @media only screen and (max-width: 316px) {
         display: none;
     }
+    @media only screen and (max-width: 428px) {
+        margin-top: -20px;
+    }
 `;
 
 export const Container = styled.div`

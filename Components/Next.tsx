@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { I, J, L, O, S, T, Z } from "../Constants/pieces";
-import { NextContainer } from "./Sidebar";
+import { NextContainer, NextText } from "./Sidebar";
 
 import { HiddenNextCheckBox, NextCheckBox } from "./Checkbox";
 import { FC } from "./Flex";
@@ -73,16 +73,20 @@ export function NextPiece({ nextCur, paused, gameOver, FF }: any) {
                     })}
             </NextContainer>
 
-            <div style={{ marginTop: "0px", color: "gray" }}>
-                {nextCur && "next"}
-                {gameOver && (
-                    <FC>
-                        <i>
-                            <h3>GAME</h3>
-                            <h3>OVER!</h3>
-                        </i>
-                    </FC>
-                )}
+            <div>
+                <NextText
+                    FF={nav?.userAgent.toLowerCase().indexOf("firefox") > -1}
+                >
+                    {nextCur && "next"}{" "}
+                    {gameOver && (
+                        <FC>
+                            <i>
+                                <h3>GAME</h3>
+                                <h3>OVER!</h3>
+                            </i>
+                        </FC>
+                    )}
+                </NextText>
             </div>
         </FC>
     );
