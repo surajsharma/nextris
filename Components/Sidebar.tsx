@@ -49,11 +49,9 @@ export const NextContainer = styled.div<SideBarProps>`
             -moz-transform: scale(90%);`}
     }
 
-    width: 70px;
+    width: 68px;
+
     height: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
     align-items: center;
     align-content: center;
     justify-content: center;
@@ -81,7 +79,7 @@ color:white;
 padding:10px;
 
     @media only screen and (max-width: 428px) {
-        margin-top: -8px;
+        margin-top: -10px;
         ${({ FF }) =>
             FF &&
             `margin-top:-25px !important;

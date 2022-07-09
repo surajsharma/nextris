@@ -68,3 +68,14 @@ button:active {
     color: orange;
     cursor: pointer;
 }
+
+.unsupported {
+    overflow: hidden;
+    position: absolute;
+    z-index: -2;
+    color: black;
+    background-color: tomato;
+    padding: 1em;
+    border: 1px solid darkgoldenrod;
+    font-family: sans-serif;
+}

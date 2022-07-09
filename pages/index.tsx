@@ -451,6 +451,7 @@ const Home: NextPage = () => {
                     </h1>
                 </FC>
             </OuterContainer>
+            <div className="unsupported">Screen size not supported.</div>
         </div>
     );
 };
