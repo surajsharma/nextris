@@ -97,7 +97,9 @@ const Home: NextPage = () => {
         let newM: any = m;
         let clearM: any = m;
 
-        rowsToClear.forEach((rowToPop: number, index: number) => {
+        for (let index = 0; index < rowsToClear.length; index++) {
+            let rowToPop = rowsToClear[index];
+
             let pad: any = [];
 
             for (let j = 0; j < COLS; j++) {
@@ -120,7 +122,7 @@ const Home: NextPage = () => {
             setScore((oldScore) => {
                 return oldScore + 1;
             });
-        });
+        }
 
         //all rows to be cleared processed, set new matrix
         for (let i = 0; i < ROWS; i++) {
@@ -259,11 +261,12 @@ const Home: NextPage = () => {
 
     const outOfBounds = () => {
         let count = 0;
-        m.forEach((row: []) => {
+        for (let i = 0; i < ROWS; i++) {
+            let row = m[i];
             if (row.filter((cell: any) => cell === cur.name).length) {
                 count += row.filter((cell: any) => cell === cur.name).length;
             }
-        });
+        }
 
         return count === 4 ? 0 : 4 - count;
     };
@@ -440,7 +443,7 @@ const Home: NextPage = () => {
                                 </>
                             ) : (
                                 <>
-                                    selectrix<sup>TM</sup>
+                                    nextrix<sup>TM</sup>
                                 </>
                             )}
                         </i>

@@ -44,19 +44,20 @@ export function collisionR(m: any) {
   let hit_cell = false;
   let hit_right = false;
 
-  m.forEach((row: [], r: number) => {
-    row && row.forEach((cell, c) => {
+  for (let i = 0; i < ROWS; i++) {
+    for (let j = 0; j < COLS; j++) {
+      let cell = m[i][j];
       if (cell === 0) {
-        empty_cells.push([r, c]);
+        empty_cells.push([i, j]);
       } else {
         if (cell === 1) {
-          settled_cells.push([r, c])
+          settled_cells.push([i, j])
         } else {
-          current_cells.push([r, c]);
+          current_cells.push([i, j]);
         }
       }
-    })
-  });
+    }
+  }
 
   let next_cells = [...current_cells];
 
@@ -79,19 +80,20 @@ export function collisionL(m: any) {
   let hit_cell = false;
   let hit_left = false;
 
-  m.forEach((row: [], r: number) => {
-    row && row.forEach((cell, c) => {
+  for (let i = 0; i < ROWS; i++) {
+    for (let j = 0; j < COLS; j++) {
+      let cell = m[i][j];
       if (cell === 0) {
-        empty_cells.push([r, c]);
+        empty_cells.push([i, j]);
       } else {
         if (cell === 1) {
-          settled_cells.push([r, c])
+          settled_cells.push([i, j])
         } else {
-          current_cells.push([r, c]);
+          current_cells.push([i, j]);
         }
       }
-    })
-  });
+    }
+  };
 
   let next_cells = [...current_cells];
 
@@ -114,19 +116,20 @@ export function collisionB(m: any) {
   let hit_cell = false;
   let hit_bottom = false;
 
-  m.forEach((row: [], r: number) => {
-    row && row.forEach((cell, c) => {
+  for (let i = 0; i < ROWS; i++) {
+    for (let j = 0; j < COLS; j++) {
+      let cell = m[i][j];
       if (cell === 0) {
-        empty_cells.push([r, c]);
+        empty_cells.push([i, j]);
       } else {
         if (cell === 1) {
-          settled_cells.push([r, c])
+          settled_cells.push([i, j])
         } else {
-          current_cells.push([r, c]);
+          current_cells.push([i, j]);
         }
       }
-    })
-  });
+    }
+  };
 
   let next_cells = [...current_cells];
 
