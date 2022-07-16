@@ -1,6 +1,7 @@
 Selectris - A Tetris in NextJS using only Select checkboxes.
 
-![alt text](/public/selectris.png)
+![alt text](/public/nextris.png)
+![alt text](/public/nextris_mobile.png)
 
 -   Fully responsive
 -   Mobile ready (swipe up, down, left, right)
